@@ -1,1150 +1,2472 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sidali - Personal Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BENAYACHE Sidali — Analyste Cybersécurité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #060911;
+    --bg-2: #0a1120;
+    --panel: rgba(11,16,24,0.88);
+    --panel-2: rgba(14,20,29,0.92);
+    --line: #1f2b3a;
+    --text: #dfe6ec;
+    --text-dim: #8ea0ac;
+    --text-faint: #5b6b76;
+    --accent: #4fd1a5;
+    --accent-dim: #2c7a5e;
+    --amber: #e8a854;
+    --red: #e06552;
+    --blue: #5fa8e0;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
 
-  <!--
-    - favicon
-  -->
-  <link rel="shortcut icon" href="./assets/images/my-avatar.png" type="image/x-icon">
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body{
+    background:
+      radial-gradient(ellipse 1200px 800px at 15% 4%, rgba(90,165,225,0.30), transparent 58%),
+      radial-gradient(ellipse 1300px 850px at 90% 0%, rgba(60,130,215,0.32), transparent 58%),
+      radial-gradient(ellipse 900px 700px at 50% 45%, rgba(79,209,165,0.04), transparent 60%),
+      radial-gradient(ellipse 1100px 750px at 95% 95%, rgba(90,165,225,0.26), transparent 55%),
+      radial-gradient(ellipse 1000px 700px at 3% 88%, rgba(55,115,195,0.22), transparent 55%),
+      linear-gradient(180deg, #04070f 0%, #061024 38%, #030711 100%);
+    background-attachment: fixed;
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
 
-  <!--
-    - custom css link
-  -->
-  <link rel="stylesheet" href="style.css">
+  ::selection{ background:var(--accent); color:#06110c; }
 
-  <!--
-    - google font link
-  -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  a{ color:inherit; text-decoration:none; }
+
+  /* glass panels sit on top of the animated network background */
+  /* text sitting directly on the background (outside glass panels) needs a soft shadow for legibility */
+  .hero-meta, .profil-text p, .services-intro,
+  .log-time, .log-body h3, .log-body .org, .log-body ul,
+  .edu-item h3, .edu-item p, .edu-year,
+  .contact-panel .lead, footer{
+    text-shadow:0 2px 12px rgba(0,0,0,0.55);
+  }
+
+  .terminal, .stat-card, .skill-panel, .service-card, .contact-panel, .lang-toggle-single, .cv-btn, .chip{
+    backdrop-filter: blur(18px) saturate(120%);
+    -webkit-backdrop-filter: blur(18px) saturate(120%);
+  }
+
+  /* ---------- background grid ---------- */
+  .grid-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background-image:
+      linear-gradient(rgba(79,209,165,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,209,165,0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events:none;
+  }
+  .scan-line{
+    position:fixed;
+    left:0; right:0;
+    height:120px;
+    top:-120px;
+    background:linear-gradient(180deg, transparent, rgba(79,209,165,0.05), transparent);
+    z-index:1;
+    pointer-events:none;
+    animation: scan 9s linear infinite;
+  }
+  @keyframes scan{
+    0%{ top:-120px; }
+    100%{ top:100vh; }
+  }
+
+  /* ---------- animated threat-intel network background ---------- */
+  .bg-network{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    opacity:0.5;
+    pointer-events:none;
+    mix-blend-mode:screen;
+    -webkit-mask-image: radial-gradient(ellipse 95% 90% at 50% 32%, black 45%, transparent 96%);
+    mask-image: radial-gradient(ellipse 95% 90% at 50% 32%, black 45%, transparent 96%);
+  }
+  .bg-scrim{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:
+      linear-gradient(180deg, rgba(3,6,12,0.35) 0%, rgba(3,6,12,0.55) 30%, rgba(3,6,12,0.72) 65%, rgba(3,6,12,0.85) 100%),
+      radial-gradient(ellipse 700px 500px at 50% 18%, rgba(3,6,12,0.15), transparent 70%);
+  }
+  .bg-network .map-dots circle{ fill: rgba(110,180,235,0.65); }
+  .bg-network .hub{
+    fill: #6fc4ff;
+    filter: drop-shadow(0 0 7px rgba(95,168,224,0.95));
+    animation: hubPulse 3.4s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .bg-network .hub:nth-of-type(2n){ animation-delay:-1.1s; }
+  .bg-network .hub:nth-of-type(3n){ animation-delay:-2.2s; }
+  @keyframes hubPulse{
+    0%,100%{ opacity:0.5; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.35); }
+  }
+  .bg-network .arc{
+    fill:none;
+    stroke:url(#arcGrad);
+    stroke-width:1.2;
+    stroke-dasharray:5 11;
+    opacity:0.6;
+    animation: arcFlow 6s linear infinite;
+  }
+  .bg-network .map-arcs .arc:nth-child(even){ animation-duration:8s; animation-direction:reverse; }
+  @keyframes arcFlow{ to{ stroke-dashoffset:-160; } }
+
+  /* ---------- layout helpers ---------- */
+  .wrap{ max-width:980px; margin:0 auto; padding:0 28px; position:relative; z-index:2; }
+  section{ padding:110px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+    text-shadow:0 2px 12px rgba(0,0,0,0.55);
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--accent);
+    flex-shrink:0;
+  }
+
+  h2.section-title{
+    font-family:var(--sans);
+    font-weight:800;
+    font-size:clamp(28px, 4vw, 38px);
+    letter-spacing:-0.01em;
+    color:#f4f7f9;
+    margin-bottom:44px;
+    text-shadow:0 2px 18px rgba(0,0,0,0.5);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:50;
+    background:rgba(5,8,13,0.82);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--line);
+    transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(79,209,165,0.6), rgba(95,168,224,0.6), transparent);
+    opacity:0.7;
+  }
+  header.scrolled{
+    background:rgba(6,9,14,0.86);
+    box-shadow:0 12px 32px -18px rgba(0,0,0,0.65);
+    border-color: rgba(79,209,165,0.18);
+  }
+  nav{
+    max-width:980px;
+    margin:0 auto;
+    padding:16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:14.5px;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .logo .dot{
+    width:8px; height:8px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.35; }
+  }
+  .nav-links{
+    display:flex;
+    gap:30px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-dim);
+  }
+  .nav-links a{ transition:color .15s ease; position:relative; padding-bottom:4px; }
+  .nav-links a::after{
+    content:"";
+    position:absolute;
+    left:0; right:100%; bottom:0;
+    height:1.5px;
+    background:linear-gradient(90deg, var(--accent), var(--blue));
+    transition: right .22s ease;
+  }
+  .nav-links a:hover{ color:var(--accent); }
+  .nav-links a:hover::after{ right:0; }
+  .nav-links a.active{ color:var(--accent); }
+  .nav-links a.active::after{ right:0; }
+  .nav-links a:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; }
+  .nav-links .idx{ color:var(--text-faint); margin-right:5px; }
+  .burger{ display:none; }
+
+  .nav-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .cv-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:600;
+    color:#06120d;
+    background:linear-gradient(135deg, var(--accent), #6fc4ff);
+    border:1px solid transparent;
+    padding:9px 15px;
+    border-radius:24px;
+    box-shadow:0 0 0 0 rgba(79,209,165,0.5);
+    animation: cvGlow 3.2s ease-in-out infinite;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .cv-btn svg{ width:13px; height:13px; flex-shrink:0; }
+  .cv-btn:hover{ transform:translateY(-1px); box-shadow:0 4px 20px rgba(95,168,224,0.45); }
+  .cv-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  @keyframes cvGlow{
+    0%,100%{ box-shadow:0 0 0 0 rgba(95,168,224,0.35); }
+    50%{ box-shadow:0 0 14px 1px rgba(95,168,224,0.35); }
+  }
+
+  .lang-toggle-single{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--text);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    padding:8px 12px;
+    border-radius:24px;
+    cursor:pointer;
+    transition: all .18s ease;
+  }
+  .lang-toggle-single .flag{ font-size:15px; line-height:1; }
+  .lang-toggle-single:hover{ border-color:var(--accent); color:var(--accent); }
+  .lang-toggle-single:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .lang-toggle-single .swap-ico{ width:11px; height:11px; opacity:0.55; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding-top:90px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-inner{ width:100%; }
+
+  .terminal{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+    margin-bottom:38px;
+  }
+  .terminal-bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 16px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--line);
+  }
+  .tb-dot{ width:10px; height:10px; border-radius:50%; }
+  .tb-dot.r{ background:#e06552; }
+  .tb-dot.y{ background:#e8a854; }
+  .tb-dot.g{ background:#4fd1a5; }
+  .terminal-title{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+    margin-left:8px;
+  }
+  .terminal-body{
+    padding:22px 24px 26px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    line-height:1.85;
+    min-height:230px;
+  }
+  .t-line{ color:var(--text-dim); white-space:pre-wrap; }
+  .t-ok{ color:var(--accent); }
+  .t-prompt{ color:var(--blue); }
+  .t-cursor{
+    display:inline-block;
+    width:8px; height:15px;
+    background:var(--accent);
+    vertical-align:middle;
+    margin-left:2px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-name{
+    font-family:var(--sans);
+    font-weight:800;
+    font-size:clamp(38px, 6.4vw, 64px);
+    letter-spacing:-0.02em;
+    line-height:1.04;
+    color:#f6f9fa;
+    text-shadow:0 4px 26px rgba(0,0,0,0.6);
+    opacity:0;
+  }
+  .hero-role{
+    font-family:var(--mono);
+    font-size:clamp(14px, 2vw, 17px);
+    color:var(--accent);
+    margin-top:14px;
+    text-shadow:0 2px 14px rgba(0,0,0,0.6);
+    opacity:0;
+  }
+  .hero-desc{
+    max-width:560px;
+    color:var(--text-dim);
+    font-size:16px;
+    margin-top:20px;
+    text-shadow:0 2px 14px rgba(0,0,0,0.55);
+    opacity:0;
+  }
+  .fade-in{ animation: fadeUp .7s ease forwards; }
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .hero-ctas{
+    display:flex;
+    gap:14px;
+    margin-top:32px;
+    flex-wrap:wrap;
+    opacity:0;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    padding:13px 22px;
+    border-radius:6px;
+    border:1px solid var(--line);
+    transition: all .18s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#06120d;
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  .btn-primary:hover{ background:#68e3ba; box-shadow:0 0 24px rgba(79,209,165,0.35); }
+  .btn-ghost{ color:var(--text); }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent); }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .hero-meta{
+    display:flex;
+    gap:26px;
+    margin-top:46px;
+    flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-faint);
+    opacity:0;
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:7px; }
+  .hero-meta b{ color:var(--text-dim); font-weight:500; }
+
+  /* ---------- profil ---------- */
+  .profil-grid{
+    display:grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap:44px;
+  }
+  .profil-text p{ color:var(--text-dim); font-size:15.5px; margin-bottom:16px; max-width:56ch; }
+  .profil-text strong{ color:var(--text); font-weight:600; }
+
+  .stat-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:20px 22px;
+    margin-bottom:12px;
+  }
+  .stat-card .label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin-bottom:6px;
+  }
+  .stat-card .value{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:15px;
+    color:var(--text);
+  }
+
+  /* ---------- competences ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:16px;
+  }
+  .skill-panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:22px 22px 20px;
+    transition: border-color .18s ease, transform .18s ease;
+  }
+  .skill-panel:hover{ border-color: var(--panel-accent, var(--accent)); transform:translateY(-2px); }
+  .skill-panel .sp-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .skill-panel h3{
+    font-family:var(--sans);
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--text);
+  }
+  .sp-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.06em;
+    padding:3px 8px;
+    border-radius:4px;
+    text-transform:uppercase;
+  }
+  .tag-defense{ color:var(--accent); background:rgba(79,209,165,0.1); border:1px solid rgba(79,209,165,0.25); }
+  .tag-offense{ color:var(--red); background:rgba(224,101,82,0.1); border:1px solid rgba(224,101,82,0.25); }
+  .tag-auto{ color:var(--amber); background:rgba(232,168,84,0.1); border:1px solid rgba(232,168,84,0.25); }
+  .tag-infra{ color:var(--blue); background:rgba(95,168,224,0.1); border:1px solid rgba(95,168,224,0.25); }
+  .tag-dev{ color:#c78ee0; background:rgba(199,142,224,0.1); border:1px solid rgba(199,142,224,0.25); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:7px; }
+  .chip{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-dim);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    padding:5px 10px;
+    border-radius:5px;
+  }
+
+  /* ---------- services ---------- */
+  .services-intro{ color:var(--text-dim); font-size:15.5px; max-width:62ch; margin:-24px 0 38px; }
+  .services-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:16px;
+  }
+  .service-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:24px 24px 22px;
+    transition: border-color .18s ease, transform .18s ease;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .service-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+  .service-card .sv-icon{
+    width:38px; height:38px;
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(79,209,165,0.1);
+    border:1px solid rgba(79,209,165,0.25);
+    color:var(--accent);
+    font-size:17px;
+    margin-bottom:4px;
+  }
+  .service-card h3{
+    font-family:var(--sans);
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--text);
+  }
+  .service-card p{
+    color:var(--text-dim);
+    font-size:13.8px;
+  }
+  .service-card .sv-for{
+    margin-top:auto;
+    padding-top:12px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-faint);
+    border-top:1px solid var(--line);
+  }
+  .service-card .sv-for b{ color:var(--text-dim); font-weight:500; }
+
+  .services-cta{
+    margin-top:28px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+
+  /* ---------- experience / log format ---------- */
+  .log-entry{
+    display:grid;
+    grid-template-columns: 150px 1fr;
+    gap:24px;
+    padding:26px 0;
+    border-top:1px solid var(--line);
+  }
+  .log-entry:first-child{ border-top:1px solid var(--line); }
+  .log-time{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text-faint);
+    padding-top:3px;
+  }
+  .log-time .badge{
+    display:inline-block;
+    font-size:10px;
+    color:var(--accent);
+    border:1px solid var(--accent-dim);
+    padding:2px 7px;
+    border-radius:4px;
+    margin-bottom:8px;
+  }
+  .log-body h3{
+    font-family:var(--sans);
+    font-size:17px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:3px;
+  }
+  .log-body .org{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-faint);
+    margin-bottom:12px;
+  }
+  .log-body ul{
+    list-style:none;
+    color:var(--text-dim);
+    font-size:14.5px;
+  }
+  .log-body li{
+    position:relative;
+    padding-left:18px;
+    margin-bottom:7px;
+  }
+  .log-body li::before{
+    content:"›";
+    position:absolute;
+    left:0;
+    color:var(--accent);
+    font-family:var(--mono);
+  }
+  .log-body .chip-row{ margin-top:14px; }
+
+  /* ---------- formation ---------- */
+  .edu-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    padding:20px 0;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .edu-item:first-child{ border-top:1px solid var(--line); }
+  .edu-item h3{ font-size:15.5px; font-weight:700; color:var(--text); margin-bottom:4px; }
+  .edu-item p{ font-family:var(--mono); font-size:12.5px; color:var(--text-faint); }
+  .edu-year{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--accent);
+    white-space:nowrap;
+  }
+
+  /* ---------- contact ---------- */
+  .contact-panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:44px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:36px;
+  }
+  .contact-panel h2{
+    font-size:clamp(24px,3vw,30px);
+    font-weight:800;
+    color:#f4f7f9;
+    margin-bottom:14px;
+    grid-column:1/-1;
+  }
+  .contact-panel .lead{
+    color:var(--text-dim);
+    font-size:15px;
+    grid-column:1/-1;
+    margin-bottom:6px;
+    max-width:60ch;
+  }
+  .contact-list{ display:flex; flex-direction:column; gap:16px; }
+  .contact-list a, .contact-list .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:var(--mono);
+    font-size:13.5px;
+    color:var(--text-dim);
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .contact-list a:hover{ border-color:var(--accent); color:var(--accent); }
+  .contact-list .ico{ color:var(--accent); font-size:14px; width:16px; text-align:center; }
+
+  footer{
+    text-align:center;
+    padding:34px 0 44px;
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:760px){
+    .nav-links{ display:none; }
+    nav{ gap:10px; }
+    .cv-btn{ padding:8px 12px; }
+    .cv-btn span{ font-size:11px; }
+    section{ padding:70px 0; }
+    .profil-grid{ grid-template-columns:1fr; }
+    .skills-grid{ grid-template-columns:1fr; }
+    .services-grid{ grid-template-columns:1fr; }
+    .log-entry{ grid-template-columns:1fr; gap:10px; }
+    .contact-panel{ grid-template-columns:1fr; padding:28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
 </head>
-
 <body>
 
-  <!--
-    - #MAIN
-  -->
+<div class="grid-bg"></div>
+<svg class="bg-network" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#3f8fe0" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#7fd4ff" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#3f8fe0" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g class="map-dots">
+      <circle cx="225.0" cy="108.7" r="1.2" />
+      <circle cx="328.7" cy="162.1" r="1.4" />
+      <circle cx="100.8" cy="93.7" r="1.4" />
+      <circle cx="373.4" cy="307.0" r="1.0" />
+      <circle cx="348.8" cy="169.8" r="1.2" />
+      <circle cx="137.2" cy="100.4" r="1.4" />
+      <circle cx="379.0" cy="163.8" r="1.4" />
+      <circle cx="334.5" cy="86.7" r="1.0" />
+      <circle cx="399.3" cy="177.5" r="1.4" />
+      <circle cx="288.2" cy="145.7" r="1.0" />
+      <circle cx="455.0" cy="245.1" r="1.4" />
+      <circle cx="323.4" cy="288.9" r="1.2" />
+      <circle cx="423.3" cy="142.8" r="1.4" />
+      <circle cx="440.5" cy="213.7" r="1.0" />
+      <circle cx="406.6" cy="219.0" r="1.0" />
+      <circle cx="350.2" cy="184.7" r="1.0" />
+      <circle cx="298.4" cy="236.4" r="1.4" />
+      <circle cx="148.8" cy="100.3" r="1.4" />
+      <circle cx="335.3" cy="291.0" r="1.0" />
+      <circle cx="354.7" cy="136.5" r="1.4" />
+      <circle cx="318.7" cy="224.8" r="1.2" />
+      <circle cx="258.5" cy="170.4" r="1.0" />
+      <circle cx="168.7" cy="111.5" r="1.0" />
+      <circle cx="232.9" cy="84.2" r="1.0" />
+      <circle cx="366.9" cy="108.1" r="1.4" />
+      <circle cx="244.7" cy="101.7" r="1.0" />
+      <circle cx="294.5" cy="191.5" r="1.4" />
+      <circle cx="108.7" cy="96.5" r="1.4" />
+      <circle cx="234.2" cy="137.0" r="1.4" />
+      <circle cx="324.9" cy="107.6" r="1.0" />
+      <circle cx="327.0" cy="265.0" r="1.4" />
+      <circle cx="227.8" cy="126.6" r="1.2" />
+      <circle cx="240.5" cy="78.3" r="1.0" />
+      <circle cx="534.3" cy="182.4" r="1.4" />
+      <circle cx="174.4" cy="127.6" r="1.0" />
+      <circle cx="162.8" cy="122.0" r="1.0" />
+      <circle cx="371.8" cy="295.2" r="1.0" />
+      <circle cx="477.5" cy="190.4" r="1.4" />
+      <circle cx="385.9" cy="270.1" r="1.2" />
+      <circle cx="433.4" cy="190.1" r="1.0" />
+      <circle cx="421.0" cy="113.4" r="1.2" />
+      <circle cx="128.8" cy="108.7" r="1.0" />
+      <circle cx="324.1" cy="303.5" r="1.4" />
+      <circle cx="351.9" cy="296.2" r="1.4" />
+      <circle cx="311.9" cy="203.5" r="1.2" />
+      <circle cx="281.8" cy="116.7" r="1.4" />
+      <circle cx="421.2" cy="209.6" r="1.2" />
+      <circle cx="338.2" cy="266.3" r="1.0" />
+      <circle cx="444.2" cy="197.5" r="1.2" />
+      <circle cx="341.3" cy="260.3" r="1.0" />
+      <circle cx="512.8" cy="181.4" r="1.4" />
+      <circle cx="366.1" cy="196.9" r="1.4" />
+      <circle cx="317.1" cy="243.5" r="1.2" />
+      <circle cx="287.8" cy="203.8" r="1.0" />
+      <circle cx="408.5" cy="289.3" r="1.0" />
+      <circle cx="340.2" cy="305.9" r="1.0" />
+      <circle cx="389.5" cy="106.7" r="1.2" />
+      <circle cx="261.4" cy="192.4" r="1.4" />
+      <circle cx="318.7" cy="155.5" r="1.0" />
+      <circle cx="337.5" cy="180.7" r="1.4" />
+      <circle cx="371.7" cy="198.6" r="1.0" />
+      <circle cx="198.9" cy="103.4" r="1.4" />
+      <circle cx="345.6" cy="245.4" r="1.2" />
+      <circle cx="403.1" cy="177.0" r="1.0" />
+      <circle cx="376.8" cy="270.6" r="1.4" />
+      <circle cx="288.5" cy="155.5" r="1.0" />
+      <circle cx="337.1" cy="301.7" r="1.0" />
+      <circle cx="197.6" cy="103.3" r="1.4" />
+      <circle cx="324.3" cy="130.5" r="1.0" />
+      <circle cx="120.2" cy="111.3" r="1.0" />
+      <circle cx="219.2" cy="147.0" r="1.4" />
+      <circle cx="438.0" cy="143.3" r="1.4" />
+      <circle cx="311.2" cy="115.4" r="1.4" />
+      <circle cx="236.3" cy="75.6" r="1.0" />
+      <circle cx="425.1" cy="208.3" r="1.4" />
+      <circle cx="467.0" cy="178.7" r="1.2" />
+      <circle cx="308.7" cy="278.8" r="1.4" />
+      <circle cx="258.8" cy="197.2" r="1.4" />
+      <circle cx="412.2" cy="229.4" r="1.4" />
+      <circle cx="264.5" cy="157.6" r="1.0" />
+      <circle cx="93.3" cy="103.4" r="1.2" />
+      <circle cx="191.6" cy="111.7" r="1.2" />
+      <circle cx="204.5" cy="131.4" r="1.4" />
+      <circle cx="298.7" cy="196.2" r="1.0" />
+      <circle cx="215.4" cy="129.1" r="1.2" />
+      <circle cx="353.0" cy="202.8" r="1.0" />
+      <circle cx="433.6" cy="234.8" r="1.2" />
+      <circle cx="416.7" cy="289.9" r="1.0" />
+      <circle cx="257.1" cy="152.3" r="1.0" />
+      <circle cx="420.7" cy="231.2" r="1.4" />
+      <circle cx="425.4" cy="273.3" r="1.4" />
+      <circle cx="313.2" cy="278.9" r="1.2" />
+      <circle cx="352.2" cy="293.3" r="1.0" />
+      <circle cx="400.5" cy="243.7" r="1.2" />
+      <circle cx="339.7" cy="227.4" r="1.2" />
+      <circle cx="372.8" cy="240.5" r="1.0" />
+      <circle cx="456.7" cy="257.3" r="1.4" />
+      <circle cx="312.6" cy="204.3" r="1.0" />
+      <circle cx="426.9" cy="133.9" r="1.4" />
+      <circle cx="423.2" cy="122.2" r="1.2" />
+      <circle cx="308.2" cy="166.3" r="1.2" />
+      <circle cx="300.8" cy="241.3" r="1.4" />
+      <circle cx="441.6" cy="224.7" r="1.0" />
+      <circle cx="430.0" cy="146.9" r="1.0" />
+      <circle cx="395.2" cy="243.4" r="1.0" />
+      <circle cx="397.0" cy="143.5" r="1.0" />
+      <circle cx="319.2" cy="186.8" r="1.2" />
+      <circle cx="294.7" cy="100.6" r="1.2" />
+      <circle cx="286.4" cy="138.0" r="1.4" />
+      <circle cx="467.7" cy="197.7" r="1.2" />
+      <circle cx="287.0" cy="146.3" r="1.2" />
+      <circle cx="248.6" cy="168.9" r="1.2" />
+      <circle cx="243.0" cy="177.6" r="1.0" />
+      <circle cx="201.2" cy="83.1" r="1.4" />
+      <circle cx="188.6" cy="137.2" r="1.0" />
+      <circle cx="316.5" cy="118.4" r="1.2" />
+      <circle cx="375.1" cy="298.5" r="1.0" />
+      <circle cx="526.6" cy="207.8" r="1.0" />
+      <circle cx="424.7" cy="183.3" r="1.0" />
+      <circle cx="434.6" cy="231.5" r="1.4" />
+      <circle cx="206.6" cy="83.3" r="1.2" />
+      <circle cx="297.5" cy="156.6" r="1.0" />
+      <circle cx="387.4" cy="146.0" r="1.4" />
+      <circle cx="339.1" cy="169.3" r="1.2" />
+      <circle cx="148.5" cy="111.3" r="1.0" />
+      <circle cx="309.7" cy="125.9" r="1.2" />
+      <circle cx="286.6" cy="105.9" r="1.2" />
+      <circle cx="160.7" cy="93.7" r="1.2" />
+      <circle cx="233.8" cy="93.8" r="1.4" />
+      <circle cx="183.6" cy="135.4" r="1.2" />
+      <circle cx="345.1" cy="291.9" r="1.2" />
+      <circle cx="433.2" cy="173.8" r="1.2" />
+      <circle cx="269.0" cy="201.6" r="1.2" />
+      <circle cx="250.9" cy="155.3" r="1.4" />
+      <circle cx="312.8" cy="227.8" r="1.0" />
+      <circle cx="199.2" cy="132.9" r="1.2" />
+      <circle cx="262.1" cy="182.1" r="1.4" />
+      <circle cx="504.6" cy="188.9" r="1.4" />
+      <circle cx="120.0" cy="109.5" r="1.0" />
+      <circle cx="322.0" cy="240.9" r="1.4" />
+      <circle cx="383.1" cy="261.5" r="1.0" />
+      <circle cx="290.2" cy="208.4" r="1.0" />
+      <circle cx="382.2" cy="146.7" r="1.0" />
+      <circle cx="377.7" cy="245.0" r="1.2" />
+      <circle cx="121.5" cy="88.6" r="1.4" />
+      <circle cx="323.1" cy="216.2" r="1.2" />
+      <circle cx="256.4" cy="126.8" r="1.0" />
+      <circle cx="498.7" cy="189.4" r="1.2" />
+      <circle cx="181.4" cy="132.6" r="1.0" />
+      <circle cx="217.0" cy="76.5" r="1.2" />
+      <circle cx="310.3" cy="239.0" r="1.4" />
+      <circle cx="272.0" cy="135.1" r="1.2" />
+      <circle cx="392.9" cy="301.4" r="1.2" />
+      <circle cx="177.5" cy="79.6" r="1.2" />
+      <circle cx="400.4" cy="120.4" r="1.4" />
+      <circle cx="456.3" cy="255.1" r="1.4" />
+      <circle cx="313.5" cy="122.2" r="1.2" />
+      <circle cx="309.0" cy="117.7" r="1.4" />
+      <circle cx="391.9" cy="307.2" r="1.0" />
+      <circle cx="391.5" cy="165.3" r="1.2" />
+      <circle cx="249.5" cy="153.7" r="1.4" />
+      <circle cx="468.5" cy="178.7" r="1.4" />
+      <circle cx="232.4" cy="138.9" r="1.0" />
+      <circle cx="221.4" cy="139.7" r="1.0" />
+      <circle cx="255.6" cy="133.6" r="1.4" />
+      <circle cx="276.9" cy="193.9" r="1.2" />
+      <circle cx="459.0" cy="254.9" r="1.2" />
+      <circle cx="363.5" cy="152.7" r="1.4" />
+      <circle cx="222.9" cy="161.2" r="1.4" />
+      <circle cx="187.6" cy="87.2" r="1.4" />
+      <circle cx="196.2" cy="92.0" r="1.4" />
+      <circle cx="413.7" cy="182.4" r="1.2" />
+      <circle cx="369.9" cy="238.9" r="1.2" />
+      <circle cx="432.3" cy="281.9" r="1.4" />
+      <circle cx="391.5" cy="101.3" r="1.2" />
+      <circle cx="343.8" cy="163.9" r="1.0" />
+      <circle cx="427.5" cy="120.7" r="1.4" />
+      <circle cx="187.6" cy="132.2" r="1.4" />
+      <circle cx="349.4" cy="152.3" r="1.4" />
+      <circle cx="314.7" cy="128.7" r="1.4" />
+      <circle cx="461.9" cy="233.7" r="1.4" />
+      <circle cx="298.8" cy="275.0" r="1.0" />
+      <circle cx="490.1" cy="182.9" r="1.4" />
+      <circle cx="358.1" cy="225.4" r="1.0" />
+      <circle cx="385.2" cy="121.7" r="1.4" />
+      <circle cx="398.3" cy="117.2" r="1.2" />
+      <circle cx="219.3" cy="121.7" r="1.4" />
+      <circle cx="455.5" cy="207.5" r="1.2" />
+      <circle cx="97.6" cy="96.3" r="1.2" />
+      <circle cx="259.9" cy="208.0" r="1.4" />
+      <circle cx="379.2" cy="93.8" r="1.4" />
+      <circle cx="267.0" cy="141.6" r="1.4" />
+      <circle cx="241.3" cy="174.8" r="1.0" />
+      <circle cx="244.5" cy="120.2" r="1.2" />
+      <circle cx="422.6" cy="121.8" r="1.0" />
+      <circle cx="292.0" cy="111.6" r="1.4" />
+      <circle cx="379.9" cy="297.5" r="1.4" />
+      <circle cx="248.0" cy="196.7" r="1.2" />
+      <circle cx="321.5" cy="301.5" r="1.4" />
+      <circle cx="163.1" cy="102.6" r="1.0" />
+      <circle cx="302.7" cy="84.4" r="1.2" />
+      <circle cx="319.9" cy="166.6" r="1.0" />
+      <circle cx="421.1" cy="294.4" r="1.0" />
+      <circle cx="359.8" cy="208.0" r="1.0" />
+      <circle cx="373.2" cy="147.3" r="1.4" />
+      <circle cx="272.0" cy="216.1" r="1.2" />
+      <circle cx="274.8" cy="235.1" r="1.2" />
+      <circle cx="285.1" cy="180.2" r="1.2" />
+      <circle cx="306.0" cy="129.7" r="1.2" />
+      <circle cx="440.0" cy="265.2" r="1.2" />
+      <circle cx="290.7" cy="115.8" r="1.2" />
+      <circle cx="298.0" cy="97.8" r="1.4" />
+      <circle cx="316.1" cy="81.3" r="1.0" />
+      <circle cx="377.8" cy="91.6" r="1.2" />
+      <circle cx="425.3" cy="264.7" r="1.4" />
+      <circle cx="316.7" cy="84.6" r="1.4" />
+      <circle cx="313.0" cy="165.2" r="1.2" />
+      <circle cx="424.6" cy="274.0" r="1.4" />
+      <circle cx="314.0" cy="150.5" r="1.2" />
+      <circle cx="399.0" cy="294.0" r="1.0" />
+      <circle cx="377.8" cy="160.7" r="1.2" />
+      <circle cx="493.4" cy="209.3" r="1.2" />
+      <circle cx="350.2" cy="290.8" r="1.2" />
+      <circle cx="374.6" cy="169.2" r="1.4" />
+      <circle cx="456.6" cy="137.0" r="1.4" />
+      <circle cx="282.9" cy="115.1" r="1.4" />
+      <circle cx="353.1" cy="236.3" r="1.2" />
+      <circle cx="367.8" cy="178.7" r="1.0" />
+      <circle cx="317.3" cy="294.0" r="1.2" />
+      <circle cx="354.7" cy="121.9" r="1.2" />
+      <circle cx="371.7" cy="189.3" r="1.0" />
+      <circle cx="185.8" cy="108.3" r="1.2" />
+      <circle cx="263.2" cy="136.9" r="1.4" />
+      <circle cx="341.6" cy="158.3" r="1.4" />
+      <circle cx="382.3" cy="181.6" r="1.0" />
+      <circle cx="265.2" cy="130.3" r="1.2" />
+      <circle cx="314.5" cy="230.8" r="1.2" />
+      <circle cx="217.9" cy="145.8" r="1.2" />
+      <circle cx="449.5" cy="249.2" r="1.2" />
+      <circle cx="431.0" cy="186.9" r="1.0" />
+      <circle cx="429.3" cy="183.7" r="1.4" />
+      <circle cx="177.1" cy="97.3" r="1.2" />
+      <circle cx="180.2" cy="80.8" r="1.0" />
+      <circle cx="406.5" cy="281.5" r="1.0" />
+      <circle cx="414.6" cy="137.3" r="1.0" />
+      <circle cx="337.4" cy="179.6" r="1.0" />
+      <circle cx="452.1" cy="201.3" r="1.0" />
+      <circle cx="194.0" cy="129.9" r="1.4" />
+      <circle cx="431.5" cy="152.5" r="1.0" />
+      <circle cx="375.0" cy="243.6" r="1.0" />
+      <circle cx="407.7" cy="284.5" r="1.2" />
+      <circle cx="280.4" cy="251.5" r="1.0" />
+      <circle cx="345.5" cy="147.7" r="1.0" />
+      <circle cx="235.3" cy="106.4" r="1.0" />
+      <circle cx="405.3" cy="228.9" r="1.2" />
+      <circle cx="407.4" cy="254.5" r="1.2" />
+      <circle cx="376.7" cy="276.5" r="1.0" />
+      <circle cx="375.4" cy="142.6" r="1.4" />
+      <circle cx="115.5" cy="95.5" r="1.4" />
+      <circle cx="436.9" cy="122.1" r="1.0" />
+      <circle cx="508.3" cy="469.1" r="1.0" />
+      <circle cx="448.6" cy="420.8" r="1.4" />
+      <circle cx="501.0" cy="553.4" r="1.4" />
+      <circle cx="518.0" cy="439.4" r="1.0" />
+      <circle cx="531.7" cy="570.0" r="1.0" />
+      <circle cx="513.8" cy="550.2" r="1.2" />
+      <circle cx="552.0" cy="409.2" r="1.0" />
+      <circle cx="444.7" cy="405.0" r="1.0" />
+      <circle cx="481.3" cy="489.5" r="1.4" />
+      <circle cx="513.9" cy="587.0" r="1.2" />
+      <circle cx="496.6" cy="619.3" r="1.4" />
+      <circle cx="501.2" cy="408.7" r="1.2" />
+      <circle cx="584.3" cy="490.6" r="1.2" />
+      <circle cx="570.0" cy="449.4" r="1.0" />
+      <circle cx="524.7" cy="460.7" r="1.4" />
+      <circle cx="485.7" cy="422.7" r="1.4" />
+      <circle cx="624.7" cy="491.5" r="1.0" />
+      <circle cx="491.2" cy="479.8" r="1.4" />
+      <circle cx="514.1" cy="441.0" r="1.0" />
+      <circle cx="478.4" cy="473.4" r="1.2" />
+      <circle cx="599.1" cy="514.0" r="1.0" />
+      <circle cx="469.7" cy="480.1" r="1.0" />
+      <circle cx="621.5" cy="415.4" r="1.0" />
+      <circle cx="482.8" cy="433.8" r="1.0" />
+      <circle cx="475.4" cy="391.7" r="1.0" />
+      <circle cx="494.0" cy="441.0" r="1.0" />
+      <circle cx="548.9" cy="393.2" r="1.0" />
+      <circle cx="510.1" cy="401.3" r="1.2" />
+      <circle cx="464.8" cy="457.7" r="1.4" />
+      <circle cx="591.1" cy="472.3" r="1.4" />
+      <circle cx="483.7" cy="531.0" r="1.4" />
+      <circle cx="465.8" cy="406.3" r="1.0" />
+      <circle cx="524.2" cy="575.2" r="1.0" />
+      <circle cx="583.1" cy="491.3" r="1.2" />
+      <circle cx="570.9" cy="480.5" r="1.0" />
+      <circle cx="472.8" cy="521.1" r="1.0" />
+      <circle cx="525.4" cy="560.7" r="1.0" />
+      <circle cx="626.0" cy="470.9" r="1.0" />
+      <circle cx="528.7" cy="412.7" r="1.4" />
+      <circle cx="572.8" cy="477.8" r="1.2" />
+      <circle cx="507.0" cy="528.2" r="1.4" />
+      <circle cx="464.0" cy="467.9" r="1.0" />
+      <circle cx="570.4" cy="418.9" r="1.2" />
+      <circle cx="529.2" cy="478.2" r="1.0" />
+      <circle cx="568.8" cy="464.9" r="1.2" />
+      <circle cx="481.1" cy="535.7" r="1.2" />
+      <circle cx="600.1" cy="459.0" r="1.2" />
+      <circle cx="464.7" cy="512.7" r="1.2" />
+      <circle cx="546.9" cy="531.3" r="1.2" />
+      <circle cx="610.2" cy="497.4" r="1.2" />
+      <circle cx="486.5" cy="544.4" r="1.0" />
+      <circle cx="522.9" cy="567.0" r="1.2" />
+      <circle cx="499.3" cy="462.1" r="1.0" />
+      <circle cx="528.6" cy="548.4" r="1.4" />
+      <circle cx="514.9" cy="423.3" r="1.4" />
+      <circle cx="489.3" cy="560.9" r="1.0" />
+      <circle cx="488.2" cy="578.2" r="1.0" />
+      <circle cx="522.8" cy="407.9" r="1.0" />
+      <circle cx="538.3" cy="509.0" r="1.0" />
+      <circle cx="489.6" cy="625.1" r="1.2" />
+      <circle cx="515.1" cy="531.2" r="1.4" />
+      <circle cx="538.1" cy="431.7" r="1.4" />
+      <circle cx="611.2" cy="449.1" r="1.4" />
+      <circle cx="614.6" cy="423.9" r="1.0" />
+      <circle cx="519.7" cy="419.9" r="1.2" />
+      <circle cx="529.7" cy="400.4" r="1.4" />
+      <circle cx="500.7" cy="417.4" r="1.4" />
+      <circle cx="504.8" cy="485.2" r="1.4" />
+      <circle cx="530.1" cy="530.8" r="1.0" />
+      <circle cx="576.3" cy="451.4" r="1.2" />
+      <circle cx="575.6" cy="418.9" r="1.4" />
+      <circle cx="464.7" cy="387.9" r="1.4" />
+      <circle cx="491.2" cy="570.9" r="1.0" />
+      <circle cx="513.7" cy="390.8" r="1.2" />
+      <circle cx="478.0" cy="604.1" r="1.2" />
+      <circle cx="483.9" cy="546.8" r="1.0" />
+      <circle cx="555.5" cy="423.1" r="1.4" />
+      <circle cx="491.3" cy="386.9" r="1.4" />
+      <circle cx="537.9" cy="388.4" r="1.2" />
+      <circle cx="542.7" cy="490.6" r="1.4" />
+      <circle cx="538.0" cy="509.2" r="1.2" />
+      <circle cx="519.4" cy="467.7" r="1.4" />
+      <circle cx="571.9" cy="530.4" r="1.0" />
+      <circle cx="546.6" cy="486.7" r="1.0" />
+      <circle cx="512.2" cy="595.6" r="1.4" />
+      <circle cx="517.7" cy="483.8" r="1.4" />
+      <circle cx="486.6" cy="472.4" r="1.0" />
+      <circle cx="528.9" cy="506.7" r="1.2" />
+      <circle cx="609.8" cy="431.3" r="1.0" />
+      <circle cx="610.0" cy="463.3" r="1.4" />
+      <circle cx="545.2" cy="425.2" r="1.2" />
+      <circle cx="510.6" cy="438.3" r="1.0" />
+      <circle cx="504.3" cy="516.1" r="1.4" />
+      <circle cx="454.4" cy="433.5" r="1.4" />
+      <circle cx="445.7" cy="401.5" r="1.0" />
+      <circle cx="567.8" cy="527.7" r="1.4" />
+      <circle cx="583.7" cy="518.9" r="1.4" />
+      <circle cx="580.6" cy="408.1" r="1.4" />
+      <circle cx="577.8" cy="478.9" r="1.0" />
+      <circle cx="480.7" cy="357.3" r="1.2" />
+      <circle cx="575.6" cy="453.2" r="1.2" />
+      <circle cx="556.9" cy="421.2" r="1.4" />
+      <circle cx="504.9" cy="468.5" r="1.4" />
+      <circle cx="508.1" cy="471.1" r="1.0" />
+      <circle cx="452.3" cy="381.0" r="1.4" />
+      <circle cx="628.2" cy="475.6" r="1.2" />
+      <circle cx="526.9" cy="376.1" r="1.4" />
+      <circle cx="573.3" cy="408.0" r="1.4" />
+      <circle cx="588.3" cy="416.7" r="1.2" />
+      <circle cx="506.7" cy="557.4" r="1.2" />
+      <circle cx="518.0" cy="512.8" r="1.2" />
+      <circle cx="532.2" cy="542.2" r="1.4" />
+      <circle cx="517.1" cy="533.0" r="1.4" />
+      <circle cx="570.4" cy="467.4" r="1.0" />
+      <circle cx="521.6" cy="573.8" r="1.2" />
+      <circle cx="557.8" cy="431.1" r="1.2" />
+      <circle cx="510.9" cy="521.7" r="1.0" />
+      <circle cx="564.7" cy="435.8" r="1.2" />
+      <circle cx="519.8" cy="544.5" r="1.0" />
+      <circle cx="605.9" cy="428.5" r="1.4" />
+      <circle cx="528.9" cy="516.1" r="1.4" />
+      <circle cx="558.8" cy="425.8" r="1.0" />
+      <circle cx="513.8" cy="371.2" r="1.4" />
+      <circle cx="484.5" cy="563.4" r="1.4" />
+      <circle cx="537.5" cy="406.3" r="1.2" />
+      <circle cx="495.4" cy="563.7" r="1.2" />
+      <circle cx="602.8" cy="479.5" r="1.4" />
+      <circle cx="598.9" cy="413.9" r="1.4" />
+      <circle cx="621.5" cy="497.4" r="1.2" />
+      <circle cx="539.8" cy="516.9" r="1.4" />
+      <circle cx="482.3" cy="402.2" r="1.2" />
+      <circle cx="480.6" cy="549.2" r="1.0" />
+      <circle cx="517.0" cy="509.7" r="1.4" />
+      <circle cx="524.9" cy="496.1" r="1.4" />
+      <circle cx="474.2" cy="359.5" r="1.2" />
+      <circle cx="643.9" cy="454.7" r="1.2" />
+      <circle cx="563.9" cy="446.3" r="1.0" />
+      <circle cx="617.7" cy="487.2" r="1.2" />
+      <circle cx="557.9" cy="422.2" r="1.0" />
+      <circle cx="600.3" cy="469.7" r="1.0" />
+      <circle cx="484.6" cy="398.9" r="1.2" />
+      <circle cx="461.2" cy="361.4" r="1.0" />
+      <circle cx="564.1" cy="461.5" r="1.4" />
+      <circle cx="495.9" cy="509.7" r="1.2" />
+      <circle cx="578.4" cy="460.2" r="1.2" />
+      <circle cx="534.1" cy="392.8" r="1.4" />
+      <circle cx="488.8" cy="357.8" r="1.4" />
+      <circle cx="495.6" cy="448.4" r="1.2" />
+      <circle cx="455.6" cy="388.5" r="1.4" />
+      <circle cx="579.8" cy="433.0" r="1.0" />
+      <circle cx="887.0" cy="205.4" r="1.0" />
+      <circle cx="779.0" cy="151.4" r="1.4" />
+      <circle cx="812.7" cy="126.6" r="1.0" />
+      <circle cx="862.5" cy="132.1" r="1.0" />
+      <circle cx="808.5" cy="128.9" r="1.2" />
+      <circle cx="914.9" cy="135.4" r="1.2" />
+      <circle cx="804.6" cy="227.3" r="1.0" />
+      <circle cx="786.6" cy="166.8" r="1.4" />
+      <circle cx="777.1" cy="226.7" r="1.2" />
+      <circle cx="942.7" cy="189.3" r="1.2" />
+      <circle cx="856.1" cy="153.4" r="1.4" />
+      <circle cx="938.5" cy="170.5" r="1.2" />
+      <circle cx="895.2" cy="128.9" r="1.0" />
+      <circle cx="804.8" cy="118.2" r="1.4" />
+      <circle cx="914.2" cy="180.0" r="1.2" />
+      <circle cx="787.7" cy="219.5" r="1.4" />
+      <circle cx="814.8" cy="162.4" r="1.2" />
+      <circle cx="790.2" cy="144.8" r="1.0" />
+      <circle cx="942.1" cy="152.7" r="1.0" />
+      <circle cx="792.8" cy="172.2" r="1.2" />
+      <circle cx="826.2" cy="223.5" r="1.4" />
+      <circle cx="780.9" cy="232.9" r="1.2" />
+      <circle cx="904.1" cy="137.4" r="1.0" />
+      <circle cx="861.7" cy="146.7" r="1.0" />
+      <circle cx="812.8" cy="136.2" r="1.4" />
+      <circle cx="777.2" cy="147.1" r="1.2" />
+      <circle cx="917.0" cy="147.6" r="1.2" />
+      <circle cx="934.9" cy="153.5" r="1.2" />
+      <circle cx="940.5" cy="176.6" r="1.0" />
+      <circle cx="796.8" cy="165.3" r="1.4" />
+      <circle cx="882.5" cy="128.3" r="1.4" />
+      <circle cx="795.6" cy="207.0" r="1.4" />
+      <circle cx="913.7" cy="135.6" r="1.2" />
+      <circle cx="890.8" cy="172.8" r="1.4" />
+      <circle cx="816.4" cy="136.8" r="1.4" />
+      <circle cx="891.7" cy="199.2" r="1.4" />
+      <circle cx="935.9" cy="183.7" r="1.2" />
+      <circle cx="800.5" cy="119.3" r="1.2" />
+      <circle cx="918.4" cy="161.9" r="1.4" />
+      <circle cx="935.7" cy="152.8" r="1.2" />
+      <circle cx="957.8" cy="170.4" r="1.2" />
+      <circle cx="796.9" cy="214.6" r="1.4" />
+      <circle cx="837.1" cy="131.5" r="1.4" />
+      <circle cx="838.0" cy="185.1" r="1.2" />
+      <circle cx="756.6" cy="175.8" r="1.0" />
+      <circle cx="854.6" cy="175.3" r="1.0" />
+      <circle cx="782.4" cy="200.0" r="1.4" />
+      <circle cx="826.9" cy="199.6" r="1.0" />
+      <circle cx="840.3" cy="204.6" r="1.4" />
+      <circle cx="769.2" cy="219.7" r="1.2" />
+      <circle cx="967.6" cy="172.7" r="1.0" />
+      <circle cx="869.6" cy="177.1" r="1.4" />
+      <circle cx="796.1" cy="123.9" r="1.4" />
+      <circle cx="811.2" cy="212.8" r="1.4" />
+      <circle cx="910.9" cy="135.4" r="1.4" />
+      <circle cx="759.5" cy="185.7" r="1.0" />
+      <circle cx="883.7" cy="176.2" r="1.2" />
+      <circle cx="865.2" cy="173.4" r="1.4" />
+      <circle cx="817.7" cy="126.3" r="1.2" />
+      <circle cx="845.7" cy="128.2" r="1.0" />
+      <circle cx="788.3" cy="182.4" r="1.2" />
+      <circle cx="841.9" cy="163.4" r="1.4" />
+      <circle cx="942.2" cy="176.5" r="1.0" />
+      <circle cx="843.5" cy="228.2" r="1.2" />
+      <circle cx="928.2" cy="153.2" r="1.2" />
+      <circle cx="809.0" cy="152.8" r="1.0" />
+      <circle cx="767.5" cy="175.5" r="1.0" />
+      <circle cx="811.0" cy="163.6" r="1.0" />
+      <circle cx="896.2" cy="156.5" r="1.0" />
+      <circle cx="851.8" cy="173.9" r="1.0" />
+      <circle cx="898.1" cy="144.2" r="1.2" />
+      <circle cx="906.3" cy="145.1" r="1.4" />
+      <circle cx="893.6" cy="142.3" r="1.2" />
+      <circle cx="871.2" cy="165.1" r="1.4" />
+      <circle cx="823.4" cy="191.7" r="1.0" />
+      <circle cx="782.3" cy="185.1" r="1.4" />
+      <circle cx="968.0" cy="175.0" r="1.2" />
+      <circle cx="815.2" cy="169.2" r="1.2" />
+      <circle cx="874.2" cy="129.6" r="1.4" />
+      <circle cx="783.1" cy="127.5" r="1.0" />
+      <circle cx="820.8" cy="161.7" r="1.0" />
+      <circle cx="819.6" cy="141.4" r="1.4" />
+      <circle cx="775.1" cy="179.1" r="1.0" />
+      <circle cx="942.2" cy="187.0" r="1.4" />
+      <circle cx="882.3" cy="192.0" r="1.0" />
+      <circle cx="800.3" cy="199.5" r="1.4" />
+      <circle cx="858.0" cy="179.3" r="1.2" />
+      <circle cx="891.7" cy="169.5" r="1.2" />
+      <circle cx="824.6" cy="141.3" r="1.0" />
+      <circle cx="804.8" cy="174.9" r="1.0" />
+      <circle cx="840.7" cy="184.0" r="1.0" />
+      <circle cx="758.2" cy="155.0" r="1.2" />
+      <circle cx="879.3" cy="172.3" r="1.0" />
+      <circle cx="821.2" cy="207.2" r="1.2" />
+      <circle cx="790.8" cy="119.4" r="1.2" />
+      <circle cx="949.2" cy="165.9" r="1.0" />
+      <circle cx="769.3" cy="159.4" r="1.0" />
+      <circle cx="853.3" cy="202.6" r="1.0" />
+      <circle cx="779.8" cy="139.1" r="1.4" />
+      <circle cx="789.9" cy="153.1" r="1.2" />
+      <circle cx="833.9" cy="195.2" r="1.0" />
+      <circle cx="938.0" cy="175.5" r="1.4" />
+      <circle cx="924.4" cy="170.3" r="1.2" />
+      <circle cx="925.7" cy="184.0" r="1.4" />
+      <circle cx="882.7" cy="163.1" r="1.4" />
+      <circle cx="890.5" cy="158.3" r="1.2" />
+      <circle cx="856.1" cy="168.1" r="1.0" />
+      <circle cx="916.2" cy="147.6" r="1.0" />
+      <circle cx="842.4" cy="180.2" r="1.2" />
+      <circle cx="841.0" cy="151.2" r="1.2" />
+      <circle cx="875.4" cy="377.6" r="1.2" />
+      <circle cx="780.1" cy="332.8" r="1.4" />
+      <circle cx="900.2" cy="263.7" r="1.0" />
+      <circle cx="895.2" cy="394.7" r="1.4" />
+      <circle cx="880.8" cy="401.1" r="1.2" />
+      <circle cx="931.5" cy="360.2" r="1.0" />
+      <circle cx="832.6" cy="425.9" r="1.4" />
+      <circle cx="928.9" cy="403.6" r="1.2" />
+      <circle cx="754.4" cy="355.4" r="1.2" />
+      <circle cx="845.6" cy="415.2" r="1.4" />
+      <circle cx="897.9" cy="517.1" r="1.0" />
+      <circle cx="1015.9" cy="391.3" r="1.2" />
+      <circle cx="857.5" cy="435.4" r="1.0" />
+      <circle cx="884.7" cy="496.6" r="1.4" />
+      <circle cx="776.0" cy="337.3" r="1.4" />
+      <circle cx="879.4" cy="270.9" r="1.0" />
+      <circle cx="992.9" cy="370.2" r="1.4" />
+      <circle cx="771.7" cy="328.3" r="1.2" />
+      <circle cx="879.1" cy="397.1" r="1.2" />
+      <circle cx="781.3" cy="293.9" r="1.0" />
+      <circle cx="914.9" cy="428.6" r="1.0" />
+      <circle cx="725.6" cy="333.0" r="1.2" />
+      <circle cx="979.0" cy="423.1" r="1.2" />
+      <circle cx="926.4" cy="298.5" r="1.2" />
+      <circle cx="874.9" cy="412.6" r="1.2" />
+      <circle cx="898.1" cy="367.1" r="1.4" />
+      <circle cx="761.2" cy="285.7" r="1.2" />
+      <circle cx="754.7" cy="290.1" r="1.0" />
+      <circle cx="882.4" cy="499.0" r="1.4" />
+      <circle cx="909.7" cy="493.7" r="1.2" />
+      <circle cx="957.3" cy="338.9" r="1.4" />
+      <circle cx="940.7" cy="348.8" r="1.2" />
+      <circle cx="775.6" cy="320.9" r="1.0" />
+      <circle cx="900.4" cy="347.2" r="1.2" />
+      <circle cx="860.4" cy="359.0" r="1.0" />
+      <circle cx="900.5" cy="542.6" r="1.2" />
+      <circle cx="857.3" cy="434.0" r="1.2" />
+      <circle cx="799.8" cy="249.6" r="1.0" />
+      <circle cx="971.0" cy="332.7" r="1.0" />
+      <circle cx="874.2" cy="539.5" r="1.2" />
+      <circle cx="797.9" cy="360.3" r="1.4" />
+      <circle cx="941.6" cy="306.4" r="1.2" />
+      <circle cx="870.8" cy="489.2" r="1.2" />
+      <circle cx="798.0" cy="291.1" r="1.2" />
+      <circle cx="832.8" cy="295.3" r="1.4" />
+      <circle cx="894.2" cy="272.3" r="1.4" />
+      <circle cx="885.8" cy="358.9" r="1.0" />
+      <circle cx="846.3" cy="256.5" r="1.2" />
+      <circle cx="830.6" cy="313.9" r="1.0" />
+      <circle cx="782.2" cy="326.3" r="1.2" />
+      <circle cx="796.1" cy="246.7" r="1.0" />
+      <circle cx="925.2" cy="344.8" r="1.2" />
+      <circle cx="752.4" cy="321.8" r="1.0" />
+      <circle cx="858.4" cy="503.2" r="1.2" />
+      <circle cx="877.0" cy="308.3" r="1.2" />
+      <circle cx="861.3" cy="277.5" r="1.4" />
+      <circle cx="938.0" cy="319.0" r="1.2" />
+      <circle cx="996.3" cy="423.6" r="1.4" />
+      <circle cx="835.7" cy="314.4" r="1.4" />
+      <circle cx="908.3" cy="303.6" r="1.4" />
+      <circle cx="879.5" cy="409.2" r="1.2" />
+      <circle cx="840.7" cy="446.0" r="1.2" />
+      <circle cx="896.0" cy="335.0" r="1.4" />
+      <circle cx="842.3" cy="263.1" r="1.0" />
+      <circle cx="833.7" cy="395.7" r="1.4" />
+      <circle cx="814.2" cy="256.6" r="1.4" />
+      <circle cx="818.5" cy="308.0" r="1.4" />
+      <circle cx="809.8" cy="364.6" r="1.0" />
+      <circle cx="764.4" cy="324.0" r="1.2" />
+      <circle cx="925.0" cy="348.0" r="1.0" />
+      <circle cx="849.1" cy="446.5" r="1.4" />
+      <circle cx="935.8" cy="315.1" r="1.0" />
+      <circle cx="980.3" cy="348.2" r="1.2" />
+      <circle cx="914.5" cy="293.7" r="1.2" />
+      <circle cx="946.3" cy="463.6" r="1.4" />
+      <circle cx="773.4" cy="298.9" r="1.0" />
+      <circle cx="816.0" cy="357.4" r="1.4" />
+      <circle cx="736.3" cy="335.0" r="1.4" />
+      <circle cx="917.4" cy="293.1" r="1.0" />
+      <circle cx="978.1" cy="418.0" r="1.2" />
+      <circle cx="941.0" cy="317.1" r="1.0" />
+      <circle cx="855.9" cy="454.5" r="1.0" />
+      <circle cx="811.0" cy="249.3" r="1.4" />
+      <circle cx="982.6" cy="429.9" r="1.0" />
+      <circle cx="738.8" cy="313.8" r="1.0" />
+      <circle cx="934.4" cy="361.5" r="1.4" />
+      <circle cx="950.4" cy="500.8" r="1.4" />
+      <circle cx="809.4" cy="264.3" r="1.4" />
+      <circle cx="1010.5" cy="371.2" r="1.0" />
+      <circle cx="947.7" cy="501.2" r="1.0" />
+      <circle cx="914.3" cy="380.4" r="1.4" />
+      <circle cx="853.9" cy="399.4" r="1.0" />
+      <circle cx="936.8" cy="493.4" r="1.4" />
+      <circle cx="888.8" cy="315.5" r="1.2" />
+      <circle cx="848.9" cy="300.0" r="1.0" />
+      <circle cx="818.3" cy="279.3" r="1.0" />
+      <circle cx="938.1" cy="450.1" r="1.4" />
+      <circle cx="796.3" cy="312.9" r="1.4" />
+      <circle cx="880.2" cy="378.0" r="1.4" />
+      <circle cx="890.1" cy="478.9" r="1.4" />
+      <circle cx="905.4" cy="383.1" r="1.0" />
+      <circle cx="759.0" cy="328.1" r="1.2" />
+      <circle cx="833.4" cy="301.6" r="1.0" />
+      <circle cx="742.7" cy="325.4" r="1.2" />
+      <circle cx="859.8" cy="271.7" r="1.0" />
+      <circle cx="822.5" cy="385.5" r="1.2" />
+      <circle cx="834.1" cy="289.3" r="1.2" />
+      <circle cx="855.7" cy="296.3" r="1.4" />
+      <circle cx="914.2" cy="534.8" r="1.4" />
+      <circle cx="921.7" cy="316.0" r="1.0" />
+      <circle cx="798.8" cy="279.9" r="1.4" />
+      <circle cx="978.2" cy="330.4" r="1.2" />
+      <circle cx="823.2" cy="294.6" r="1.2" />
+      <circle cx="973.9" cy="338.0" r="1.4" />
+      <circle cx="835.8" cy="411.9" r="1.4" />
+      <circle cx="796.8" cy="248.8" r="1.4" />
+      <circle cx="895.8" cy="436.6" r="1.0" />
+      <circle cx="972.2" cy="461.3" r="1.0" />
+      <circle cx="873.9" cy="395.4" r="1.4" />
+      <circle cx="772.0" cy="331.4" r="1.0" />
+      <circle cx="900.1" cy="261.2" r="1.0" />
+      <circle cx="932.4" cy="287.9" r="1.0" />
+      <circle cx="857.3" cy="296.6" r="1.0" />
+      <circle cx="962.3" cy="371.7" r="1.0" />
+      <circle cx="880.0" cy="370.3" r="1.0" />
+      <circle cx="826.8" cy="375.9" r="1.2" />
+      <circle cx="925.8" cy="499.9" r="1.4" />
+      <circle cx="813.8" cy="377.4" r="1.4" />
+      <circle cx="894.7" cy="346.9" r="1.4" />
+      <circle cx="783.5" cy="262.8" r="1.2" />
+      <circle cx="822.3" cy="382.9" r="1.4" />
+      <circle cx="928.9" cy="430.5" r="1.2" />
+      <circle cx="1012.4" cy="389.4" r="1.2" />
+      <circle cx="920.1" cy="331.3" r="1.4" />
+      <circle cx="732.9" cy="296.0" r="1.0" />
+      <circle cx="929.6" cy="378.7" r="1.0" />
+      <circle cx="836.9" cy="421.4" r="1.4" />
+      <circle cx="850.3" cy="405.1" r="1.4" />
+      <circle cx="895.1" cy="362.4" r="1.2" />
+      <circle cx="759.0" cy="293.3" r="1.0" />
+      <circle cx="993.4" cy="411.0" r="1.4" />
+      <circle cx="801.1" cy="265.9" r="1.2" />
+      <circle cx="884.9" cy="316.0" r="1.4" />
+      <circle cx="872.3" cy="412.8" r="1.0" />
+      <circle cx="902.3" cy="261.2" r="1.2" />
+      <circle cx="847.8" cy="259.1" r="1.2" />
+      <circle cx="857.3" cy="511.9" r="1.4" />
+      <circle cx="890.8" cy="464.2" r="1.0" />
+      <circle cx="842.9" cy="290.4" r="1.0" />
+      <circle cx="796.0" cy="354.7" r="1.0" />
+      <circle cx="788.9" cy="331.5" r="1.2" />
+      <circle cx="938.2" cy="371.9" r="1.4" />
+      <circle cx="993.0" cy="434.3" r="1.4" />
+      <circle cx="988.0" cy="415.7" r="1.4" />
+      <circle cx="930.1" cy="499.8" r="1.2" />
+      <circle cx="761.5" cy="354.9" r="1.0" />
+      <circle cx="906.9" cy="267.4" r="1.2" />
+      <circle cx="890.3" cy="492.5" r="1.4" />
+      <circle cx="928.5" cy="317.0" r="1.2" />
+      <circle cx="782.8" cy="378.5" r="1.4" />
+      <circle cx="977.8" cy="421.6" r="1.0" />
+      <circle cx="839.5" cy="281.7" r="1.2" />
+      <circle cx="989.0" cy="407.9" r="1.2" />
+      <circle cx="932.8" cy="494.2" r="1.2" />
+      <circle cx="827.9" cy="283.9" r="1.4" />
+      <circle cx="876.1" cy="514.9" r="1.0" />
+      <circle cx="929.8" cy="361.2" r="1.0" />
+      <circle cx="868.2" cy="286.2" r="1.0" />
+      <circle cx="979.9" cy="361.4" r="1.0" />
+      <circle cx="988.3" cy="431.0" r="1.0" />
+      <circle cx="747.4" cy="340.9" r="1.0" />
+      <circle cx="775.7" cy="351.1" r="1.4" />
+      <circle cx="865.8" cy="420.2" r="1.0" />
+      <circle cx="841.7" cy="348.7" r="1.0" />
+      <circle cx="825.3" cy="242.1" r="1.2" />
+      <circle cx="738.2" cy="282.2" r="1.4" />
+      <circle cx="927.2" cy="322.8" r="1.4" />
+      <circle cx="807.1" cy="395.6" r="1.4" />
+      <circle cx="884.1" cy="541.8" r="1.0" />
+      <circle cx="893.9" cy="482.2" r="1.4" />
+      <circle cx="915.8" cy="438.6" r="1.2" />
+      <circle cx="834.1" cy="325.7" r="1.2" />
+      <circle cx="947.9" cy="398.4" r="1.2" />
+      <circle cx="916.4" cy="347.7" r="1.4" />
+      <circle cx="890.9" cy="365.5" r="1.0" />
+      <circle cx="742.7" cy="343.5" r="1.4" />
+      <circle cx="870.0" cy="353.1" r="1.0" />
+      <circle cx="798.0" cy="310.7" r="1.0" />
+      <circle cx="830.0" cy="279.0" r="1.2" />
+      <circle cx="861.4" cy="378.1" r="1.0" />
+      <circle cx="896.3" cy="332.3" r="1.0" />
+      <circle cx="775.5" cy="256.8" r="1.0" />
+      <circle cx="815.6" cy="334.3" r="1.0" />
+      <circle cx="944.1" cy="412.0" r="1.2" />
+      <circle cx="748.6" cy="292.8" r="1.0" />
+      <circle cx="774.2" cy="321.3" r="1.0" />
+      <circle cx="937.3" cy="305.4" r="1.2" />
+      <circle cx="845.2" cy="299.7" r="1.4" />
+      <circle cx="906.7" cy="512.1" r="1.2" />
+      <circle cx="920.3" cy="298.5" r="1.2" />
+      <circle cx="906.1" cy="260.9" r="1.2" />
+      <circle cx="827.6" cy="279.3" r="1.2" />
+      <circle cx="989.0" cy="440.3" r="1.0" />
+      <circle cx="920.6" cy="365.3" r="1.0" />
+      <circle cx="929.6" cy="343.6" r="1.4" />
+      <circle cx="825.5" cy="393.8" r="1.0" />
+      <circle cx="905.1" cy="317.8" r="1.2" />
+      <circle cx="1004.1" cy="416.1" r="1.4" />
+      <circle cx="910.0" cy="467.3" r="1.0" />
+      <circle cx="823.9" cy="265.5" r="1.0" />
+      <circle cx="771.6" cy="281.2" r="1.4" />
+      <circle cx="970.5" cy="371.0" r="1.0" />
+      <circle cx="887.2" cy="423.9" r="1.0" />
+      <circle cx="892.2" cy="445.9" r="1.0" />
+      <circle cx="906.3" cy="341.4" r="1.2" />
+      <circle cx="948.4" cy="318.1" r="1.0" />
+      <circle cx="939.5" cy="479.8" r="1.2" />
+      <circle cx="959.0" cy="334.5" r="1.0" />
+      <circle cx="861.4" cy="324.6" r="1.2" />
+      <circle cx="882.6" cy="536.7" r="1.4" />
+      <circle cx="1165.5" cy="270.7" r="1.0" />
+      <circle cx="1316.7" cy="183.5" r="1.2" />
+      <circle cx="1307.8" cy="102.3" r="1.2" />
+      <circle cx="954.9" cy="225.0" r="1.0" />
+      <circle cx="1205.8" cy="129.7" r="1.4" />
+      <circle cx="1400.6" cy="184.4" r="1.2" />
+      <circle cx="1318.7" cy="147.8" r="1.0" />
+      <circle cx="1422.2" cy="224.1" r="1.4" />
+      <circle cx="1246.7" cy="178.1" r="1.0" />
+      <circle cx="1330.0" cy="212.6" r="1.0" />
+      <circle cx="1128.1" cy="332.9" r="1.2" />
+      <circle cx="1132.1" cy="349.3" r="1.2" />
+      <circle cx="1038.0" cy="150.6" r="1.2" />
+      <circle cx="1057.4" cy="204.7" r="1.0" />
+      <circle cx="1041.7" cy="136.1" r="1.4" />
+      <circle cx="1309.1" cy="266.9" r="1.4" />
+      <circle cx="1034.2" cy="245.1" r="1.2" />
+      <circle cx="1364.9" cy="155.1" r="1.0" />
+      <circle cx="1067.6" cy="174.3" r="1.4" />
+      <circle cx="1227.2" cy="210.5" r="1.0" />
+      <circle cx="1361.9" cy="129.8" r="1.2" />
+      <circle cx="1270.4" cy="102.4" r="1.0" />
+      <circle cx="1273.8" cy="86.8" r="1.4" />
+      <circle cx="1180.2" cy="144.5" r="1.4" />
+      <circle cx="1142.6" cy="106.8" r="1.4" />
+      <circle cx="985.5" cy="220.7" r="1.0" />
+      <circle cx="993.3" cy="203.1" r="1.4" />
+      <circle cx="1178.1" cy="109.0" r="1.0" />
+      <circle cx="1103.6" cy="223.3" r="1.2" />
+      <circle cx="1389.9" cy="179.6" r="1.4" />
+      <circle cx="1062.8" cy="128.3" r="1.0" />
+      <circle cx="946.3" cy="227.1" r="1.2" />
+      <circle cx="1131.2" cy="241.3" r="1.0" />
+      <circle cx="1273.1" cy="270.0" r="1.0" />
+      <circle cx="1200.1" cy="239.0" r="1.4" />
+      <circle cx="1126.7" cy="170.3" r="1.4" />
+      <circle cx="1120.6" cy="190.3" r="1.4" />
+      <circle cx="1132.2" cy="118.2" r="1.4" />
+      <circle cx="1232.4" cy="351.4" r="1.0" />
+      <circle cx="1053.5" cy="257.5" r="1.4" />
+      <circle cx="1115.4" cy="147.2" r="1.2" />
+      <circle cx="1276.2" cy="172.1" r="1.0" />
+      <circle cx="1251.9" cy="239.0" r="1.0" />
+      <circle cx="1356.9" cy="227.5" r="1.4" />
+      <circle cx="1043.2" cy="263.0" r="1.0" />
+      <circle cx="1301.1" cy="188.4" r="1.2" />
+      <circle cx="1285.3" cy="192.7" r="1.2" />
+      <circle cx="1191.1" cy="258.0" r="1.4" />
+      <circle cx="1267.6" cy="171.5" r="1.2" />
+      <circle cx="1243.1" cy="237.3" r="1.0" />
+      <circle cx="1037.6" cy="257.9" r="1.0" />
+      <circle cx="1164.2" cy="290.4" r="1.2" />
+      <circle cx="1188.9" cy="217.5" r="1.0" />
+      <circle cx="1394.3" cy="233.0" r="1.4" />
+      <circle cx="1189.9" cy="232.6" r="1.0" />
+      <circle cx="1336.5" cy="146.6" r="1.4" />
+      <circle cx="1157.7" cy="266.3" r="1.2" />
+      <circle cx="1117.6" cy="323.3" r="1.0" />
+      <circle cx="1338.8" cy="112.2" r="1.0" />
+      <circle cx="1002.4" cy="150.4" r="1.2" />
+      <circle cx="976.5" cy="181.8" r="1.0" />
+      <circle cx="1331.4" cy="230.8" r="1.4" />
+      <circle cx="1153.9" cy="101.8" r="1.4" />
+      <circle cx="1276.6" cy="209.4" r="1.2" />
+      <circle cx="1166.8" cy="313.3" r="1.2" />
+      <circle cx="1308.9" cy="120.2" r="1.2" />
+      <circle cx="1269.1" cy="184.8" r="1.0" />
+      <circle cx="1188.3" cy="146.3" r="1.2" />
+      <circle cx="1112.3" cy="176.8" r="1.4" />
+      <circle cx="1026.2" cy="245.5" r="1.4" />
+      <circle cx="1288.3" cy="157.3" r="1.2" />
+      <circle cx="1088.6" cy="147.6" r="1.0" />
+      <circle cx="1347.1" cy="102.8" r="1.0" />
+      <circle cx="1246.8" cy="331.3" r="1.2" />
+      <circle cx="1026.6" cy="201.6" r="1.2" />
+      <circle cx="1325.9" cy="259.5" r="1.4" />
+      <circle cx="1148.7" cy="184.9" r="1.2" />
+      <circle cx="1285.5" cy="163.5" r="1.0" />
+      <circle cx="1131.1" cy="268.6" r="1.0" />
+      <circle cx="1335.3" cy="180.5" r="1.0" />
+      <circle cx="1119.7" cy="247.9" r="1.0" />
+      <circle cx="1393.0" cy="132.6" r="1.0" />
+      <circle cx="1113.1" cy="273.8" r="1.4" />
+      <circle cx="1307.5" cy="188.5" r="1.0" />
+      <circle cx="1190.9" cy="223.4" r="1.2" />
+      <circle cx="1158.8" cy="213.2" r="1.4" />
+      <circle cx="1349.8" cy="199.1" r="1.0" />
+      <circle cx="1147.3" cy="221.8" r="1.2" />
+      <circle cx="1264.1" cy="296.0" r="1.4" />
+      <circle cx="1268.9" cy="240.5" r="1.4" />
+      <circle cx="984.3" cy="141.3" r="1.2" />
+      <circle cx="1306.1" cy="243.6" r="1.2" />
+      <circle cx="1284.7" cy="219.3" r="1.0" />
+      <circle cx="1136.2" cy="249.4" r="1.0" />
+      <circle cx="1366.2" cy="118.9" r="1.4" />
+      <circle cx="1093.8" cy="229.9" r="1.2" />
+      <circle cx="1063.6" cy="153.7" r="1.4" />
+      <circle cx="1083.1" cy="151.5" r="1.2" />
+      <circle cx="1359.6" cy="241.0" r="1.2" />
+      <circle cx="1183.3" cy="200.7" r="1.0" />
+      <circle cx="950.4" cy="166.2" r="1.4" />
+      <circle cx="1358.5" cy="152.1" r="1.2" />
+      <circle cx="1196.4" cy="186.9" r="1.0" />
+      <circle cx="1159.7" cy="221.2" r="1.0" />
+      <circle cx="1220.2" cy="184.5" r="1.0" />
+      <circle cx="1330.5" cy="135.2" r="1.2" />
+      <circle cx="1390.3" cy="241.2" r="1.2" />
+      <circle cx="950.4" cy="169.1" r="1.0" />
+      <circle cx="1194.5" cy="197.3" r="1.4" />
+      <circle cx="1210.7" cy="171.9" r="1.4" />
+      <circle cx="1072.2" cy="287.1" r="1.0" />
+      <circle cx="1331.0" cy="251.9" r="1.4" />
+      <circle cx="1149.9" cy="337.0" r="1.0" />
+      <circle cx="953.7" cy="204.7" r="1.4" />
+      <circle cx="1248.3" cy="90.1" r="1.4" />
+      <circle cx="1361.5" cy="97.0" r="1.0" />
+      <circle cx="1226.6" cy="129.2" r="1.4" />
+      <circle cx="1391.8" cy="242.6" r="1.0" />
+      <circle cx="1330.1" cy="223.9" r="1.0" />
+      <circle cx="1265.9" cy="276.5" r="1.2" />
+      <circle cx="1073.9" cy="138.4" r="1.0" />
+      <circle cx="1349.2" cy="119.0" r="1.0" />
+      <circle cx="1389.5" cy="137.2" r="1.0" />
+      <circle cx="1134.6" cy="271.8" r="1.4" />
+      <circle cx="1272.0" cy="121.7" r="1.4" />
+      <circle cx="1073.2" cy="144.8" r="1.2" />
+      <circle cx="1219.4" cy="170.5" r="1.2" />
+      <circle cx="1208.5" cy="121.4" r="1.0" />
+      <circle cx="1386.5" cy="172.2" r="1.4" />
+      <circle cx="1350.7" cy="120.8" r="1.2" />
+      <circle cx="1117.0" cy="266.4" r="1.2" />
+      <circle cx="1037.6" cy="238.1" r="1.4" />
+      <circle cx="971.9" cy="213.9" r="1.2" />
+      <circle cx="1293.4" cy="203.6" r="1.0" />
+      <circle cx="1268.4" cy="109.6" r="1.2" />
+      <circle cx="1344.2" cy="111.9" r="1.2" />
+      <circle cx="1400.4" cy="232.3" r="1.0" />
+      <circle cx="1071.8" cy="179.2" r="1.0" />
+      <circle cx="1304.6" cy="223.4" r="1.0" />
+      <circle cx="1227.3" cy="236.6" r="1.0" />
+      <circle cx="1352.8" cy="143.2" r="1.4" />
+      <circle cx="1257.1" cy="90.5" r="1.4" />
+      <circle cx="1093.2" cy="209.4" r="1.2" />
+      <circle cx="1207.8" cy="104.0" r="1.0" />
+      <circle cx="1203.9" cy="310.2" r="1.4" />
+      <circle cx="1226.2" cy="212.9" r="1.0" />
+      <circle cx="1103.2" cy="187.1" r="1.4" />
+      <circle cx="1260.4" cy="124.4" r="1.2" />
+      <circle cx="1367.0" cy="218.6" r="1.4" />
+      <circle cx="1369.8" cy="110.4" r="1.0" />
+      <circle cx="1175.8" cy="235.2" r="1.0" />
+      <circle cx="984.0" cy="214.9" r="1.2" />
+      <circle cx="1007.6" cy="235.0" r="1.0" />
+      <circle cx="1181.2" cy="184.8" r="1.4" />
+      <circle cx="1024.6" cy="195.8" r="1.0" />
+      <circle cx="1171.9" cy="311.1" r="1.0" />
+      <circle cx="1213.5" cy="280.7" r="1.0" />
+      <circle cx="1002.3" cy="154.2" r="1.0" />
+      <circle cx="940.1" cy="192.7" r="1.2" />
+      <circle cx="1187.0" cy="162.5" r="1.0" />
+      <circle cx="1375.6" cy="100.7" r="1.2" />
+      <circle cx="1217.6" cy="145.2" r="1.4" />
+      <circle cx="1226.1" cy="309.0" r="1.2" />
+      <circle cx="1284.6" cy="94.1" r="1.4" />
+      <circle cx="1049.0" cy="254.0" r="1.4" />
+      <circle cx="1237.7" cy="281.6" r="1.4" />
+      <circle cx="1337.2" cy="177.4" r="1.2" />
+      <circle cx="1335.1" cy="213.1" r="1.4" />
+      <circle cx="1400.9" cy="198.2" r="1.4" />
+      <circle cx="1130.7" cy="101.8" r="1.4" />
+      <circle cx="1268.4" cy="120.6" r="1.0" />
+      <circle cx="1098.9" cy="117.4" r="1.2" />
+      <circle cx="1024.9" cy="141.0" r="1.4" />
+      <circle cx="1167.5" cy="223.6" r="1.0" />
+      <circle cx="1305.2" cy="265.1" r="1.2" />
+      <circle cx="1025.3" cy="261.7" r="1.4" />
+      <circle cx="1101.4" cy="123.9" r="1.2" />
+      <circle cx="1302.2" cy="115.7" r="1.0" />
+      <circle cx="1223.6" cy="205.2" r="1.2" />
+      <circle cx="1365.7" cy="164.6" r="1.2" />
+      <circle cx="1411.3" cy="233.9" r="1.4" />
+      <circle cx="1042.0" cy="134.5" r="1.4" />
+      <circle cx="1156.4" cy="146.0" r="1.4" />
+      <circle cx="1271.7" cy="287.1" r="1.0" />
+      <circle cx="1123.1" cy="309.0" r="1.4" />
+      <circle cx="1326.6" cy="278.9" r="1.2" />
+      <circle cx="1130.3" cy="101.5" r="1.4" />
+      <circle cx="1255.0" cy="324.6" r="1.4" />
+      <circle cx="1096.5" cy="252.7" r="1.0" />
+      <circle cx="1336.1" cy="200.2" r="1.4" />
+      <circle cx="1230.9" cy="211.8" r="1.0" />
+      <circle cx="1094.4" cy="139.2" r="1.2" />
+      <circle cx="1238.2" cy="162.5" r="1.2" />
+      <circle cx="969.0" cy="156.3" r="1.4" />
+      <circle cx="1279.7" cy="207.2" r="1.4" />
+      <circle cx="1259.4" cy="315.9" r="1.0" />
+      <circle cx="1017.7" cy="156.4" r="1.0" />
+      <circle cx="1233.6" cy="341.7" r="1.4" />
+      <circle cx="1124.3" cy="224.3" r="1.2" />
+      <circle cx="1408.7" cy="226.5" r="1.2" />
+      <circle cx="1345.3" cy="123.9" r="1.0" />
+      <circle cx="1154.8" cy="316.6" r="1.4" />
+      <circle cx="1051.5" cy="180.5" r="1.4" />
+      <circle cx="1361.3" cy="228.6" r="1.2" />
+      <circle cx="1107.8" cy="272.4" r="1.2" />
+      <circle cx="1244.6" cy="187.5" r="1.4" />
+      <circle cx="1189.0" cy="277.0" r="1.2" />
+      <circle cx="1384.1" cy="223.9" r="1.0" />
+      <circle cx="1270.8" cy="241.5" r="1.4" />
+      <circle cx="1151.3" cy="299.2" r="1.4" />
+      <circle cx="1304.4" cy="86.0" r="1.4" />
+      <circle cx="1089.2" cy="116.3" r="1.2" />
+      <circle cx="1216.7" cy="89.5" r="1.4" />
+      <circle cx="1123.2" cy="298.1" r="1.2" />
+      <circle cx="1249.5" cy="159.2" r="1.2" />
+      <circle cx="1310.8" cy="162.3" r="1.2" />
+      <circle cx="1200.2" cy="200.8" r="1.4" />
+      <circle cx="1284.0" cy="281.3" r="1.0" />
+      <circle cx="1065.0" cy="123.8" r="1.2" />
+      <circle cx="1215.9" cy="321.5" r="1.2" />
+      <circle cx="1326.6" cy="179.0" r="1.2" />
+      <circle cx="995.3" cy="229.2" r="1.4" />
+      <circle cx="1369.0" cy="123.8" r="1.4" />
+      <circle cx="1298.5" cy="126.4" r="1.0" />
+      <circle cx="1075.2" cy="189.6" r="1.4" />
+      <circle cx="1019.3" cy="167.7" r="1.2" />
+      <circle cx="1402.6" cy="134.3" r="1.2" />
+      <circle cx="1087.0" cy="206.1" r="1.4" />
+      <circle cx="979.4" cy="153.0" r="1.2" />
+      <circle cx="1124.1" cy="190.4" r="1.2" />
+      <circle cx="1412.7" cy="155.0" r="1.2" />
+      <circle cx="1152.6" cy="324.8" r="1.0" />
+      <circle cx="1247.2" cy="307.4" r="1.2" />
+      <circle cx="1083.9" cy="120.8" r="1.4" />
+      <circle cx="1308.0" cy="215.6" r="1.4" />
+      <circle cx="1207.5" cy="275.2" r="1.0" />
+      <circle cx="1305.8" cy="157.6" r="1.0" />
+      <circle cx="1192.6" cy="161.4" r="1.2" />
+      <circle cx="1243.7" cy="152.9" r="1.4" />
+      <circle cx="1315.3" cy="87.9" r="1.4" />
+      <circle cx="1343.3" cy="244.2" r="1.4" />
+      <circle cx="1059.0" cy="148.0" r="1.2" />
+      <circle cx="959.8" cy="238.9" r="1.4" />
+      <circle cx="1306.3" cy="277.5" r="1.2" />
+      <circle cx="1133.6" cy="316.1" r="1.4" />
+      <circle cx="980.8" cy="167.0" r="1.0" />
+      <circle cx="1245.6" cy="281.6" r="1.2" />
+      <circle cx="1316.9" cy="193.0" r="1.4" />
+      <circle cx="1097.6" cy="192.5" r="1.0" />
+      <circle cx="1332.7" cy="179.7" r="1.2" />
+      <circle cx="1193.9" cy="230.8" r="1.2" />
+      <circle cx="1263.6" cy="344.0" r="1.2" />
+      <circle cx="992.1" cy="176.4" r="1.0" />
+      <circle cx="957.9" cy="198.6" r="1.2" />
+      <circle cx="1262.8" cy="247.6" r="1.4" />
+      <circle cx="1129.0" cy="246.4" r="1.4" />
+      <circle cx="1306.5" cy="224.6" r="1.4" />
+      <circle cx="1253.2" cy="337.2" r="1.2" />
+      <circle cx="1281.0" cy="257.9" r="1.0" />
+      <circle cx="1230.1" cy="321.0" r="1.2" />
+      <circle cx="1062.8" cy="139.0" r="1.2" />
+      <circle cx="1330.8" cy="182.7" r="1.2" />
+      <circle cx="1278.8" cy="97.0" r="1.0" />
+      <circle cx="1349.3" cy="172.4" r="1.4" />
+      <circle cx="994.8" cy="157.5" r="1.4" />
+      <circle cx="954.4" cy="208.3" r="1.4" />
+      <circle cx="1205.6" cy="316.0" r="1.0" />
+      <circle cx="1243.4" cy="176.8" r="1.2" />
+      <circle cx="1092.2" cy="244.8" r="1.0" />
+      <circle cx="1334.2" cy="235.5" r="1.2" />
+      <circle cx="1139.2" cy="94.3" r="1.0" />
+      <circle cx="1243.6" cy="291.3" r="1.2" />
+      <circle cx="1220.8" cy="194.7" r="1.2" />
+      <circle cx="1183.9" cy="250.9" r="1.0" />
+      <circle cx="1411.5" cy="173.7" r="1.4" />
+      <circle cx="1166.6" cy="115.4" r="1.0" />
+      <circle cx="1154.5" cy="278.8" r="1.2" />
+      <circle cx="1283.4" cy="210.9" r="1.2" />
+      <circle cx="1097.6" cy="132.1" r="1.2" />
+      <circle cx="1128.6" cy="159.7" r="1.2" />
+      <circle cx="1186.0" cy="206.2" r="1.2" />
+      <circle cx="1024.1" cy="154.6" r="1.0" />
+      <circle cx="1208.3" cy="284.4" r="1.2" />
+      <circle cx="1290.5" cy="289.8" r="1.0" />
+      <circle cx="1290.3" cy="263.2" r="1.4" />
+      <circle cx="1058.1" cy="181.4" r="1.0" />
+      <circle cx="1332.0" cy="211.1" r="1.4" />
+      <circle cx="1165.7" cy="320.3" r="1.0" />
+      <circle cx="1209.9" cy="226.8" r="1.2" />
+      <circle cx="1030.5" cy="150.6" r="1.2" />
+      <circle cx="1421.3" cy="205.6" r="1.0" />
+      <circle cx="1295.5" cy="189.9" r="1.4" />
+      <circle cx="1032.9" cy="249.9" r="1.0" />
+      <circle cx="1159.4" cy="88.4" r="1.2" />
+      <circle cx="1374.9" cy="234.6" r="1.0" />
+      <circle cx="960.4" cy="171.8" r="1.0" />
+      <circle cx="1240.9" cy="339.2" r="1.0" />
+      <circle cx="1169.9" cy="266.0" r="1.2" />
+      <circle cx="1028.7" cy="148.0" r="1.2" />
+      <circle cx="1383.4" cy="189.5" r="1.0" />
+      <circle cx="1155.7" cy="249.9" r="1.0" />
+      <circle cx="1246.9" cy="286.1" r="1.2" />
+      <circle cx="1147.2" cy="95.7" r="1.4" />
+      <circle cx="1291.5" cy="91.6" r="1.0" />
+      <circle cx="1162.9" cy="194.7" r="1.0" />
+      <circle cx="1265.4" cy="288.1" r="1.2" />
+      <circle cx="1045.9" cy="269.0" r="1.2" />
+      <circle cx="1275.1" cy="216.0" r="1.4" />
+      <circle cx="1228.0" cy="94.2" r="1.2" />
+      <circle cx="1040.3" cy="192.4" r="1.4" />
+      <circle cx="1245.6" cy="296.4" r="1.2" />
+      <circle cx="1390.2" cy="153.9" r="1.0" />
+      <circle cx="1308.1" cy="106.5" r="1.2" />
+      <circle cx="1006.9" cy="228.1" r="1.2" />
+      <circle cx="1206.1" cy="320.1" r="1.0" />
+      <circle cx="1179.0" cy="260.1" r="1.2" />
+      <circle cx="1225.7" cy="313.6" r="1.0" />
+      <circle cx="1200.8" cy="162.2" r="1.4" />
+      <circle cx="1156.5" cy="111.9" r="1.2" />
+      <circle cx="1253.8" cy="137.2" r="1.0" />
+      <circle cx="1378.5" cy="462.1" r="1.2" />
+      <circle cx="1475.8" cy="514.4" r="1.2" />
+      <circle cx="1432.0" cy="550.9" r="1.0" />
+      <circle cx="1367.6" cy="485.2" r="1.4" />
+      <circle cx="1437.8" cy="466.6" r="1.0" />
+      <circle cx="1425.3" cy="520.7" r="1.4" />
+      <circle cx="1394.7" cy="503.6" r="1.4" />
+      <circle cx="1374.6" cy="522.2" r="1.0" />
+      <circle cx="1417.5" cy="558.9" r="1.0" />
+      <circle cx="1432.5" cy="544.5" r="1.0" />
+      <circle cx="1464.5" cy="549.4" r="1.4" />
+      <circle cx="1429.6" cy="452.6" r="1.4" />
+      <circle cx="1423.3" cy="550.9" r="1.4" />
+      <circle cx="1380.8" cy="533.7" r="1.4" />
+      <circle cx="1347.1" cy="485.0" r="1.0" />
+      <circle cx="1364.2" cy="487.8" r="1.2" />
+      <circle cx="1319.1" cy="502.0" r="1.0" />
+      <circle cx="1476.6" cy="527.4" r="1.0" />
+      <circle cx="1467.9" cy="540.4" r="1.4" />
+      <circle cx="1436.0" cy="481.8" r="1.0" />
+      <circle cx="1346.6" cy="498.4" r="1.0" />
+      <circle cx="1440.0" cy="555.7" r="1.2" />
+      <circle cx="1443.5" cy="512.7" r="1.4" />
+      <circle cx="1358.0" cy="524.1" r="1.4" />
+      <circle cx="1367.5" cy="513.4" r="1.2" />
+      <circle cx="1396.6" cy="526.9" r="1.0" />
+      <circle cx="1333.6" cy="501.4" r="1.0" />
+      <circle cx="1424.3" cy="531.8" r="1.4" />
+      <circle cx="1434.8" cy="539.3" r="1.2" />
+      <circle cx="1346.4" cy="479.7" r="1.4" />
+      <circle cx="1339.4" cy="480.0" r="1.4" />
+      <circle cx="1473.7" cy="526.1" r="1.4" />
+      <circle cx="1407.3" cy="527.6" r="1.0" />
+      <circle cx="1408.5" cy="532.3" r="1.4" />
+      <circle cx="1366.5" cy="466.0" r="1.2" />
+      <circle cx="1322.3" cy="508.1" r="1.0" />
+      <circle cx="1474.6" cy="531.4" r="1.0" />
+      <circle cx="1356.1" cy="498.0" r="1.0" />
+      <circle cx="1424.8" cy="502.3" r="1.2" />
+      <circle cx="1431.7" cy="460.3" r="1.2" />
+      <circle cx="1449.6" cy="476.0" r="1.2" />
+      <circle cx="1454.2" cy="545.2" r="1.2" />
+      <circle cx="1421.5" cy="482.2" r="1.0" />
+      <circle cx="1419.4" cy="519.3" r="1.0" />
+      <circle cx="1419.8" cy="470.6" r="1.0" />
+      <circle cx="1418.2" cy="517.2" r="1.2" />
+      <circle cx="1366.9" cy="535.6" r="1.2" />
+      <circle cx="1326.8" cy="543.4" r="1.0" />
+      <circle cx="1347.0" cy="492.8" r="1.4" />
+      <circle cx="1395.2" cy="462.3" r="1.2" />
+      <circle cx="1352.9" cy="494.6" r="1.0" />
+      <circle cx="1438.2" cy="475.8" r="1.2" />
+      <circle cx="1336.7" cy="475.2" r="1.4" />
+      <circle cx="1370.5" cy="492.7" r="1.0" />
+      <circle cx="1416.3" cy="505.5" r="1.2" />
+      <circle cx="1420.2" cy="549.3" r="1.4" />
+      <circle cx="1380.2" cy="462.8" r="1.0" />
+      <circle cx="1384.0" cy="534.3" r="1.4" />
+      <circle cx="1387.5" cy="469.7" r="1.4" />
+      <circle cx="1343.2" cy="501.7" r="1.2" />
+      <circle cx="1366.4" cy="505.2" r="1.2" />
+      <circle cx="1468.7" cy="515.5" r="1.2" />
+      <circle cx="1434.5" cy="516.4" r="1.4" />
+      <circle cx="1470.0" cy="511.9" r="1.2" />
+      <circle cx="1466.5" cy="504.2" r="1.2" />
+      <circle cx="1432.2" cy="457.8" r="1.0" />
+      <circle cx="1382.8" cy="487.0" r="1.0" />
+      <circle cx="1338.7" cy="528.4" r="1.4" />
+      <circle cx="1366.4" cy="463.3" r="1.2" />
+      <circle cx="1418.3" cy="510.6" r="1.2" />
+      <circle cx="1306.6" cy="505.3" r="1.0" />
+      <circle cx="1433.9" cy="513.3" r="1.4" />
+      <circle cx="1343.8" cy="508.8" r="1.4" />
+      <circle cx="1409.8" cy="527.0" r="1.0" />
+      <circle cx="1470.3" cy="537.7" r="1.4" />
+      <circle cx="1454.6" cy="493.0" r="1.2" />
+      <circle cx="1342.6" cy="520.6" r="1.4" />
+      <circle cx="1380.3" cy="465.7" r="1.2" />
+      <circle cx="1336.3" cy="538.8" r="1.0" />
+      <circle cx="1373.7" cy="530.4" r="1.0" />
+      <circle cx="1343.7" cy="506.1" r="1.2" />
+      <circle cx="1412.7" cy="474.9" r="1.4" />
+      <circle cx="1359.4" cy="497.7" r="1.2" />
+      <circle cx="1363.2" cy="529.1" r="1.0" />
+      <circle cx="1348.1" cy="503.4" r="1.2" />
+      <circle cx="1402.1" cy="534.3" r="1.2" />
+      <circle cx="1395.1" cy="518.7" r="1.0" />
+      <circle cx="1406.3" cy="503.2" r="1.4" />
+      <circle cx="1419.9" cy="552.1" r="1.0" />
+      <circle cx="1353.7" cy="483.6" r="1.0" />
+      <circle cx="786.4" cy="159.0" r="1.0" />
+      <circle cx="793.7" cy="158.3" r="1.0" />
+      <circle cx="777.0" cy="147.5" r="1.0" />
+      <circle cx="793.8" cy="161.2" r="1.2" />
+      <circle cx="775.7" cy="173.7" r="1.0" />
+      <circle cx="791.1" cy="145.0" r="1.2" />
+      <circle cx="780.7" cy="152.4" r="1.2" />
+      <circle cx="789.6" cy="164.9" r="1.4" />
+      <circle cx="775.6" cy="167.4" r="1.2" />
+      <circle cx="792.8" cy="156.6" r="1.2" />
+      <circle cx="1421.5" cy="244.1" r="1.4" />
+      <circle cx="1419.4" cy="211.2" r="1.2" />
+      <circle cx="1389.9" cy="226.8" r="1.4" />
+      <circle cx="1437.3" cy="214.5" r="1.2" />
+      <circle cx="1425.6" cy="222.4" r="1.4" />
+      <circle cx="1382.4" cy="213.8" r="1.0" />
+      <circle cx="1388.6" cy="216.6" r="1.0" />
+      <circle cx="1402.2" cy="226.2" r="1.4" />
+      <circle cx="1378.9" cy="236.2" r="1.4" />
+      <circle cx="1398.6" cy="243.8" r="1.2" />
+      <circle cx="1404.4" cy="210.9" r="1.0" />
+      <circle cx="1421.4" cy="210.0" r="1.2" />
+      <circle cx="1419.0" cy="239.5" r="1.2" />
+      <circle cx="1387.3" cy="247.7" r="1.4" />
+      <circle cx="1282.4" cy="389.2" r="1.0" />
+      <circle cx="1386.5" cy="410.7" r="1.0" />
+      <circle cx="1275.2" cy="417.6" r="1.2" />
+      <circle cx="1289.3" cy="405.8" r="1.2" />
+      <circle cx="1286.3" cy="399.3" r="1.2" />
+      <circle cx="1233.2" cy="378.6" r="1.4" />
+      <circle cx="1347.0" cy="416.7" r="1.4" />
+      <circle cx="1274.8" cy="422.6" r="1.4" />
+      <circle cx="1408.0" cy="408.2" r="1.4" />
+      <circle cx="1232.5" cy="382.9" r="1.2" />
+      <circle cx="1360.7" cy="397.3" r="1.2" />
+      <circle cx="1354.9" cy="408.5" r="1.0" />
+      <circle cx="1249.9" cy="385.3" r="1.4" />
+      <circle cx="1273.9" cy="399.7" r="1.4" />
+      <circle cx="1328.9" cy="418.4" r="1.2" />
+      <circle cx="1266.4" cy="391.4" r="1.0" />
+      <circle cx="1350.2" cy="416.3" r="1.2" />
+      <circle cx="1345.2" cy="429.4" r="1.4" />
+      <circle cx="1263.1" cy="392.7" r="1.4" />
+      <circle cx="1253.7" cy="387.4" r="1.4" />
+      <circle cx="1285.3" cy="418.2" r="1.2" />
+      <circle cx="1326.5" cy="395.9" r="1.0" />
+      <circle cx="1365.5" cy="406.3" r="1.2" />
+      <circle cx="1285.9" cy="403.0" r="1.4" />
+      <circle cx="1364.7" cy="421.3" r="1.0" />
+      <circle cx="1296.6" cy="401.1" r="1.2" />
+      <circle cx="1313.4" cy="413.0" r="1.0" />
+      <circle cx="1376.4" cy="400.5" r="1.2" />
+      <circle cx="1255.0" cy="406.4" r="1.0" />
+      <circle cx="1307.4" cy="394.4" r="1.2" />
+      <circle cx="1246.9" cy="388.4" r="1.0" />
+      <circle cx="1274.1" cy="419.4" r="1.2" />
+      <circle cx="1316.8" cy="432.8" r="1.0" />
+      <circle cx="1315.3" cy="417.9" r="1.0" />
+      <circle cx="1290.0" cy="388.8" r="1.4" />
+      <circle cx="1273.3" cy="402.5" r="1.0" />
+      <circle cx="1305.9" cy="424.5" r="1.4" />
+      <circle cx="1394.8" cy="409.1" r="1.4" />
+      <circle cx="1343.5" cy="429.3" r="1.2" />
+      <circle cx="1275.4" cy="396.1" r="1.2" />
+      <circle cx="1002.8" cy="473.7" r="1.2" />
+      <circle cx="1002.9" cy="459.7" r="1.2" />
+      <circle cx="1003.9" cy="490.1" r="1.0" />
+      <circle cx="1016.4" cy="468.0" r="1.0" />
+      <circle cx="1011.5" cy="475.3" r="1.4" />
+      <circle cx="1007.9" cy="472.8" r="1.2" />
+      <circle cx="1016.6" cy="473.3" r="1.0" />
+      <circle cx="1012.2" cy="491.0" r="1.2" />
+      <circle cx="1008.2" cy="479.7" r="1.4" />
+      <circle cx="1001.7" cy="498.6" r="1.0" />
+      <circle cx="588.9" cy="65.9" r="1.0" />
+      <circle cx="594.3" cy="41.4" r="1.2" />
+      <circle cx="606.4" cy="33.8" r="1.0" />
+      <circle cx="679.5" cy="54.3" r="1.2" />
+      <circle cx="566.5" cy="38.0" r="1.4" />
+      <circle cx="670.8" cy="51.4" r="1.2" />
+      <circle cx="627.4" cy="72.2" r="1.4" />
+      <circle cx="603.8" cy="95.7" r="1.0" />
+      <circle cx="694.7" cy="79.2" r="1.2" />
+      <circle cx="604.0" cy="120.4" r="1.4" />
+      <circle cx="644.7" cy="41.9" r="1.2" />
+      <circle cx="636.2" cy="80.6" r="1.0" />
+      <circle cx="620.3" cy="121.1" r="1.4" />
+      <circle cx="659.1" cy="52.4" r="1.0" />
+      <circle cx="611.9" cy="68.2" r="1.0" />
+      <circle cx="561.0" cy="91.5" r="1.4" />
+      <circle cx="622.8" cy="104.5" r="1.0" />
+      <circle cx="622.3" cy="40.5" r="1.4" />
+      <circle cx="637.0" cy="115.0" r="1.0" />
+      <circle cx="678.3" cy="67.6" r="1.2" />
+      <circle cx="590.1" cy="107.2" r="1.4" />
+      <circle cx="680.3" cy="53.5" r="1.4" />
+      <circle cx="623.0" cy="70.0" r="1.0" />
+      <circle cx="586.9" cy="62.0" r="1.4" />
+    </g>
+    <g class="map-arcs">
+      <path class="arc" d="M1044.4,288.9 Q757.8,94.0 471.1,219.1" />
+      <path class="arc" d="M1044.4,288.9 Q651.1,100.6 257.8,232.4" />
+      <path class="arc" d="M1044.4,288.9 Q820.0,257.3 595.6,504.4" />
+      <path class="arc" d="M1044.4,288.9 Q922.2,154.0 800.0,171.1" />
+      <path class="arc" d="M1044.4,288.9 Q1005.8,176.7 967.1,152.4" />
+      <path class="arc" d="M1044.4,288.9 Q1084.0,278.8 1123.6,315.6" />
+      <path class="arc" d="M1044.4,288.9 Q1152.8,274.0 1261.3,394.2" />
+      <path class="arc" d="M1044.4,288.9 Q1180.8,177.2 1317.3,222.7" />
+      <path class="arc" d="M1044.4,288.9 Q1232.7,158.8 1420.9,241.3" />
+      <path class="arc" d="M1044.4,288.9 Q1257.8,279.6 1471.1,550.7" />
+      <path class="arc" d="M1044.4,288.9 Q928.9,261.3 813.3,371.1" />
+    </g>
+    <g class="map-hubs">
+      <circle class="hub" cx="1044.4" cy="288.9" r="3" />
+<circle class="hub" cx="471.1" cy="219.1" r="3" />
+<circle class="hub" cx="257.8" cy="232.4" r="3" />
+<circle class="hub" cx="595.6" cy="504.4" r="3" />
+<circle class="hub" cx="800.0" cy="171.1" r="3" />
+<circle class="hub" cx="967.1" cy="152.4" r="3" />
+<circle class="hub" cx="1123.6" cy="315.6" r="3" />
+<circle class="hub" cx="1261.3" cy="394.2" r="3" />
+<circle class="hub" cx="1317.3" cy="222.7" r="3" />
+<circle class="hub" cx="1420.9" cy="241.3" r="3" />
+<circle class="hub" cx="1471.1" cy="550.7" r="3" />
+<circle class="hub" cx="813.3" cy="371.1" r="3" />
+    </g>
+  </svg>
+<div class="bg-scrim"></div>
+<div class="scan-line"></div>
 
-  <main>
+<header>
+  <nav>
+    <div class="logo"><span class="dot"></span>BENAYACHE::SIDALI</div>
+    <div class="nav-links">
+      <a href="#profil"></span><span data-fr="Profil" data-en="Profile">Profil</span></a>
+      <a href="#competences"><span data-fr="Compétences" data-en="Skills">Compétences</span></a>
+      <a href="#services"><span data-fr="Services" data-en="Services">Services</span></a>
+      <a href="#experience"><span data-fr="Projets" data-en="Projects">Projets</span></a>
+      <a href="#formation"><span data-fr="Formation" data-en="Education">Formation</span></a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-controls">
+      <a class="cv-btn" href="BENAYACHE_SIDALI_CV.pdf" download aria-label="Télécharger le CV / Download resume">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+        <span data-fr="CV" data-en="Resume">CV</span>
+      </a>
+      <button type="button" id="langToggle" class="lang-toggle-single" data-lang="fr" aria-label="Changer de langue / Switch language">
+        <span class="flag">🇫🇷</span><span class="lg-code">en</span>
+        <svg class="swap-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h11l-3-3"/><path d="M17 14H6l3 3"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
 
-    <!--
-      - #SIDEBAR
-    -->
+<main class="wrap">
 
-    <aside class="sidebar" data-sidebar>
-
-      <div class="sidebar-info">
-
-        <figure class="avatar-box">
-          <img src="admin.jpg" alt="Sidali Benayache" width="80" height="100" style="border-radius: 20%;">
-        </figure>
-
-        <div class="info-content">
-          <h1 class="name" title="Sidali Benayache">Sidali Benayache</h1>
-
-          <p class="title">Ingénieur Sécurité Informatique</p>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="tb-dot r"></span><span class="tb-dot y"></span><span class="tb-dot g"></span>
+          <span class="terminal-title">soc-console — bash — 82×14</span>
         </div>
-
-        <button class="info_more-btn" data-sidebar-btn>
-          <span>Show Contacts</span>
-
-          <ion-icon name="chevron-down"></ion-icon>
-        </button>
-
+        <div class="terminal-body" id="termBody"></div>
       </div>
 
-      <div class="sidebar-info_more">
+      <h1 class="hero-name" id="heroName">BENAYACHE Sidali</h1>
+      <p class="hero-role" id="heroRole" data-fr="// Analyste Cybersécurité — SOC · SIEM · Threat Detection · Incident Response" data-en="// Cybersecurity Analyst — SOC · SIEM · Threat Detection · Incident Response">// Analyste Cybersécurité — SOC · SIEM · Threat Detection · Incident Response</p>
+      <p class="hero-desc" id="heroDesc" data-fr="Master en Sécurité des Systèmes Informatiques. Je conçois des SOC open source, je détecte les menaces avec l'IA, et j'automatise la réponse aux incidents pour réduire le temps entre alerte et remédiation." data-en="Master's degree in Information Systems Security. I design open source SOCs, detect threats with AI, and automate incident response to reduce the time between alert and remediation.">Master en Sécurité des Systèmes Informatiques. Je conçois des SOC open source, je détecte les menaces avec l'IA, et j'automatise la réponse aux incidents pour réduire le temps entre alerte et remédiation.</p>
 
-        <div class="separator"></div>
-
-        <ul class="contacts-list">
-
-          <li class="contact-item">
-
-            <div class="icon-box">
-              <ion-icon name="mail-outline"></ion-icon>
-            </div>
-
-            <div class="contact-info">
-              <p class="contact-title">Email</p>
-
-              <a href="mailto:benayachesidali01@gmail.com" class="contact-link">benayachesidali01@gmail.com</a>
-            </div>
-
-          </li>
-
-          <li class="contact-item">
-
-            <div class="icon-box">
-              <ion-icon name="phone-portrait-outline"></ion-icon>
-            </div>
-
-            <div class="contact-info">
-              <p class="contact-title">Phone</p>
-
-              <a href="tel:+213668859597" class="contact-link">0668 85 95 97</a>
-            </div>
-
-          </li>
-
-          <li class="contact-item">
-
-            <div class="icon-box">
-              <ion-icon name="calendar-outline"></ion-icon>
-            </div>
-
-            <div class="contact-info">
-              <p class="contact-title">Birthday</p>
-
-              <time datetime="2003-02-26">February 26, 2003</time>
-            </div>
-
-          </li>
-
-          <li class="contact-item">
-
-            <div class="icon-box">
-              <ion-icon name="location-outline"></ion-icon>
-            </div>
-
-            <div class="contact-info">
-              <p class="contact-title">Location</p>
-
-              <address>Ben Aknoun, Alger 🇩🇿</address>
-            </div>
-
-          </li>
-
-        </ul>
-
-        <div class="separator"></div>
-
-        <ul class="social-list">
-
-          <li class="social-item">
-            <a href="https://www.facebook.com/profile.php?id=100056749249631&mibextid=ZbWKwL" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
-            </a>
-          </li>
-
-          <li class="social-item">
-            <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fsidali-benayache-94934a24a%3Futm_source%3Dshare%26utm_campaign%3Dshare_via%26utm_content%3Dprofile%26utm_medium%3Dandroid_app%26fbclid%3DIwAR2H0obyPvhenBOC08mwooten1ut3A5Z2c2YDwdoJvoTxp4zFmk_aHa6Vos_aem_AXPg7adergW9FI_FYnpfuc8wK9YcSvZe5tNTGg6GZZQLtJCcA-n-wgn2_t4Auena44WQ7V3MZcSDfKtgYsTcKYpp&h=AT0_BF5QLwZ3lsIOKyeQioja5jy-pAQP8IaJgflYy7VA0Bq_tTu8bg79uNHNyIQkEGsHqIlaeMzjgyaU7rXneDorygnpUqoZoEpsUkQEOPHAgEOEZ2xJ_EzBC9d5RO6TLOOZBQ" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-
-          <li class="social-item">
-            <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2F_sb_info_%3Figsh%3DMTFtYWhkNmdrbW93ZA%253D%253D%26fbclid%3DIwAR2H0obyPvhenBOC08mwooten1ut3A5Z2c2YDwdoJvoTxp4zFmk_aHa6Vos_aem_AXPg7adergW9FI_FYnpfuc8wK9YcSvZe5tNTGg6GZZQLtJCcA-n-wgn2_t4Auena44WQ7V3MZcSDfKtgYsTcKYpp&h=AT0_BF5QLwZ3lsIOKyeQioja5jy-pAQP8IaJgflYy7VA0Bq_tTu8bg79uNHNyIQkEGsHqIlaeMzjgyaU7rXneDorygnpUqoZoEpsUkQEOPHAgEOEZ2xJ_EzBC9d5RO6TLOOZBQ" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-
-          <li class="social-item">
-            <a href="https://github.com/hoosid/" class="social-link">
-              <ion-icon name="logo-github"></ion-icon>
-            </a>
-          </li>
-        </ul>
-
+      <div class="hero-ctas" id="heroCtas">
+        <a href="#services" class="btn btn-primary" data-fr="Voir mes services →" data-en="See my services →">Voir mes services →</a>
+        <a href="#contact" class="btn btn-ghost" data-fr="Me contacter" data-en="Contact me">Me contacter</a>
       </div>
 
-    </aside>
-
-
-
-
-
-    <!--
-      - #main-content
-    -->
-
-    <div class="main-content">
-
-      <!--
-        - #NAVBAR
-      -->
-
-      <nav class="navbar">
-
-        <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <button class="navbar-link  active" data-nav-link>About</button>
-          </li>
-
-          <li class="navbar-item">
-            <button class="navbar-link" data-nav-link>Resume</button>
-          </li>
-
-          <li class="navbar-item">
-            <button class="navbar-link" data-nav-link>Portfolio</button>
-          </li>
-
-          <!-- <li class="navbar-item">
-            <button class="navbar-link" data-nav-link>Blog</button>
-          </li> -->
-
-          <li class="navbar-item">
-            <button class="navbar-link" data-nav-link>Contact</button>
-          </li>
-
-        </ul>
-
-      </nav>
-
-
-
-
-
-      <!--
-        - #ABOUT
-      -->
-
-      <article class="about  active" data-page="about">
-
-        <header>
-          <h2 class="h2 article-title">About me</h2>
-        </header>
-
-        <section class="about-text">
-          <p style="display: inline;">
-            Étudiant en Master 2 Sécurité des Systèmes Informatiques à l'Université Saad Dahlb de Blida 1, je combine expertise en cybersécurité, développement web full-stack et intelligence artificielle appliquée.
-
-Mon projet phare : un SOC léger open-source intégrant Wazuh, pfSense, Suricata et un agent IA, développé pour Algérie Poste. Ce système réduit de 83% le volume d'alertes manuelles et détecte le phishing avec une précision de 99,99%.
-
-Disponible immédiatement, je cherche à rejoindre une équipe ambitieuse où je peux contribuer à la cyberdéfense ou au développement de solutions numériques innovantes.
-          </p>
-        </section>
-
-
-        <!--
-          - service
-        -->
-
-        <section class="service">
-
-          <h3 class="h3 service-title">What i'm doing</h3>
-
-          <ul class="service-list">
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="icon-design.svg
-                " alt="design icon" width="40">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Cyber Security & SOC</h4>
-
-                <p class="service-item-text">
-                  Conception de SOC légers avec Wazuh, pfSense, Suricata. Détection d'intrusions et réponse aux incidents.
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="icon-dev.svg" alt="Web development icon" width="40">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">AI & Machine Learning</h4>
-
-                <p class="service-item-text">
-                  Détection de phishing par IA avec Python, scikit-learn, TF-IDF et modèles Ensemble (99.99% accuracy).
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="icon-app.svg" alt="mobile app icon" width="40">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Web development</h4>
-
-                <p class="service-item-text">
-                  Développement d'applications web robustes avec Java EE, HTML/CSS/JS, MySQL et architecture MVC.
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="hacker.png" alt="camera icon" width="40">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Pentesting & Ethical Hacking</h4>
-
-                <p class="service-item-text">
-                  Tests d'intrusion avec Kali Linux, Metasploit, Nmap. Certifié CCNA et Ethical Hacker.
-                </p>
-              </div>
-
-            </li>
-
-          </ul>
-
-        </section>
-
-
-        <!--
-          - testimonials
-        -->
-
-        <!-- <section class="testimonials">
-
-          <h3 class="h3 testimonials-title">Testimonials</h3>
-
-          <ul class="testimonials-list has-scrollbar">
-
-            <li class="testimonials-item">
-              <div class="content-card" data-testimonials-item>
-
-                <figure class="testimonials-avatar-box">
-                  <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="60" data-testimonials-avatar>
-                </figure>
-
-                <h4 class="h4 testimonials-item-title" data-testimonials-title>Daniel lewis</h4>
-
-                <div class="testimonials-text" data-testimonials-text>
-                  <p>
-                    Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                    lot of experience
-                    and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                    consectetur adipiscing
-                    elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                  </p>
-                </div>
-
-              </div>
-            </li>
-
-            <li class="testimonials-item">
-              <div class="content-card" data-testimonials-item>
-
-                <figure class="testimonials-avatar-box">
-                  <img src="./assets/images/avatar-2.png" alt="Jessica miller" width="60" data-testimonials-avatar>
-                </figure>
-
-                <h4 class="h4 testimonials-item-title" data-testimonials-title>Jessica miller</h4>
-
-                <div class="testimonials-text" data-testimonials-text>
-                  <p>
-                    Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                    lot of experience
-                    and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                    consectetur adipiscing
-                    elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                  </p>
-                </div>
-
-              </div>
-            </li>
-
-            <li class="testimonials-item">
-              <div class="content-card" data-testimonials-item>
-
-                <figure class="testimonials-avatar-box">
-                  <img src="./assets/images/avatar-3.png" alt="Emily evans" width="60" data-testimonials-avatar>
-                </figure>
-
-                <h4 class="h4 testimonials-item-title" data-testimonials-title>Emily evans</h4>
-
-                <div class="testimonials-text" data-testimonials-text>
-                  <p>
-                    Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                    lot of experience
-                    and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                    consectetur adipiscing
-                    elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                  </p>
-                </div>
-
-              </div>
-            </li>
-
-            <li class="testimonials-item">
-              <div class="content-card" data-testimonials-item>
-
-                <figure class="testimonials-avatar-box">
-                  <img src="./assets/images/avatar-4.png" alt="Henry william" width="60" data-testimonials-avatar>
-                </figure>
-
-                <h4 class="h4 testimonials-item-title" data-testimonials-title>Henry william</h4>
-
-                <div class="testimonials-text" data-testimonials-text>
-                  <p>
-                    Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                    lot of experience
-                    and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                    consectetur adipiscing
-                    elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                  </p>
-                </div>
-
-              </div>
-            </li>
-
-          </ul>
-
-        </section> -->
-
-
-        <!--
-          - testimonials modal
-        -->
-
-        <div class="modal-container" data-modal-container>
-
-          <div class="overlay" data-overlay></div>
-
-          <section class="testimonials-modal">
-
-            <button class="modal-close-btn" data-modal-close-btn>
-              <ion-icon name="close-outline"></ion-icon>
-            </button>
-
-            <!-- <div class="modal-img-wrapper">
-              <figure class="modal-avatar-box">
-                <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="80" data-modal-img>
-              </figure> -->
-
-              <!-- <img src="./assets/images/icon-quote.svg" alt="quote icon">
-            </div> --> 
-
-            <!-- <div class="modal-content">
-
-              <h4 class="h3 modal-title" data-modal-title>Daniel lewis</h4>
-
-              <time datetime="2021-06-14">14 June, 2021</time>
-
-              <div data-modal-text>
-                <p>
-                  Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                  lot of experience
-                  and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                  consectetur adipiscing
-                  elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                </p>
-              </div>
-
-            </div> -->
-
-          </section>
-
+      <div class="hero-meta" id="heroMeta">
+        <span><b>📍</b> Algérie, Algérie</span>
+        <span><b>✉</b> benayachesidali01@gmail.com</span>
+        <span><b>☎</b> 0668 85 95 97</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFIL -->
+  <section id="profil">
+    <div class="eyebrow" data-fr="01 · Profil" data-en="01 · Profile">01 · Profil</div>
+    <h2 class="section-title" data-fr="Défendre les systèmes, avant l'incident" data-en="Defending systems, before the incident">Défendre les systèmes, avant l'incident</h2>
+    <div class="profil-grid">
+      <div class="profil-text">
+        <p data-fr="Titulaire d'un <strong>Master en Sécurité des Systèmes Informatiques</strong> (Université Saad Dahlab, Blida 1), je me spécialise dans la <strong>conception et le déploiement de SOC</strong>, la <strong>détection des menaces assistée par l'IA</strong> et l'<strong>automatisation de la réponse aux incidents</strong>." data-en="Holder of a <strong>Master's degree in Information Systems Security</strong> (Saad Dahlab University, Blida 1), I specialize in <strong>SOC design and deployment</strong>, <strong>AI-assisted threat detection</strong> and <strong>incident response automation</strong>.">Titulaire d'un <strong>Master en Sécurité des Systèmes Informatiques</strong> (Université Saad Dahlab, Blida 1), je me spécialise dans la <strong>conception et le déploiement de SOC</strong>, la <strong>détection des menaces assistée par l'IA</strong> et l'<strong>automatisation de la réponse aux incidents</strong>.</p>
+        <p data-fr="Mon approche combine surveillance active (SIEM, IDS/IPS), analyse offensive (pentest, reconnaissance) et ingénierie logicielle — ce qui me permet de comprendre une menace de bout en bout : de la détection jusqu'au blocage automatisé." data-en="My approach combines active monitoring (SIEM, IDS/IPS), offensive analysis (pentesting, reconnaissance) and software engineering — allowing me to understand a threat end-to-end, from detection to automated blocking.">Mon approche combine surveillance active (SIEM, IDS/IPS), analyse offensive (pentest, reconnaissance) et ingénierie logicielle — ce qui me permet de comprendre une menace de bout en bout : de la détection jusqu'au blocage automatisé.</p>
+        <p data-fr="Actuellement en projet de fin d'études avec <strong>Algérie Poste</strong>, où je construis un SOC léger open source complet." data-en="Currently completing my final-year project with <strong>Algérie Poste</strong>, where I am building a complete lightweight open source SOC.">Actuellement en projet de fin d'études avec <strong>Algérie Poste</strong>, où je construis un SOC léger open source complet.</p>
+      </div>
+      <div class="profil-stats">
+        <div class="stat-card">
+          <div class="label" data-fr="Formation" data-en="Education">Formation</div>
+          <div class="value" data-fr="Master 2 — Sécurité des Systèmes Informatiques" data-en="Master's — Information Systems Security">Master 2 — Sécurité des Systèmes Informatiques</div>
         </div>
-
-
-        <!--
-          - clients
-        -->
-
-        <section class="clients">
-
-          <h3 class="h3 clients-title">Skills</h3>
-
-          <ul class="clients-list has-scrollbar">
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="react.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="html-5.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="css-3.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="programing.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="js.png" alt="client logo">
-              </a>
-            </li>
-
-            <li class="clients-item">
-              <a href="#">
-                <img src="php.png" alt="client logo">
-              </a>
-            </li>
-            <li class="clients-item">
-              <a href="#">
-                <img src="android.png" alt="client logo">
-              </a>
-            </li>
-            <li class="clients-item">
-              <a href="#">
-                <img src="java.png" alt="client logo">
-              </a>
-            </li>
-            <li class="clients-item">
-              <a href="#">
-                <img src="bootstrap.png" alt="client logo">
-              </a>
-            </li>
-
-          </ul>
-
-        </section>
-
-      </article>
-
-
-
-
-
-      <!--
-        - #RESUME
-      -->
-
-      <article class="resume" data-page="resume">
-
-        <header>
-          <h2 class="h2 article-title">Resume</h2>
-        </header>
-
-        <section class="timeline">
-
-          <div class="title-wrapper">
-            <div class="icon-box">
-              <ion-icon name="book-outline"></ion-icon>
-            </div>
-
-            <h3 class="h3">Education</h3>
-          </div>
-
-          <ol class="timeline-list">
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Master 2 — Sécurité des Systèmes Informatiques</h4>
-
-              <span>2024 — 2026</span>
-
-              <p class="timeline-text">
-                Université Saad Dahlb de Blida 1. Spécialisation en sécurité informatique, développement d'un SOC léger avec IA pour Algérie Poste en PFE.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">CCNA 1, 2 & Enterprise Security + Ethical Hacker</h4>
-
-              <span>2024 — 2025</span>
-
-              <p class="timeline-text">
-                INSFP Blida — Cisco Networking Academy. Formation aux réseaux, switching/routing, sécurité d'entreprise et ethical hacking. Certificat CCNA Enterprise obtenu en Février 2026.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Licence LMD — Mathématiques et Informatique</h4>
-
-              <span>2023 — 2024</span>
-
-              <p class="timeline-text">
-                Université Blida 1. Formation en mathématiques appliquées et informatique. Réalisation de plusieurs projets web et Java EE.
-              </p>
-
-            </li>
-
-          </ol>
-
-        </section>
-
-        <section class="timeline">
-
-          <div class="title-wrapper">
-            <div class="icon-box">
-              <ion-icon name="book-outline"></ion-icon>
-            </div>
-
-            <h3 class="h3">Experience</h3>
-          </div>
-
-          <ol class="timeline-list">
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Projet de Fin d'Études — SOC avec Agent IA</h4>
-
-              <span>2025/2026 — Algérie Poste</span>
-
-              <p class="timeline-text">
-                Conception et déploiement d'un Security Operations Center complet basé sur des solutions open source (Wazuh, pfSense, Suricata). Intégration d'un agent IA pour la détection de phishing et la classification automatique des alertes. Réduction de 83% des alertes manuelles.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Plateforme SportDZ — Développeur Freelance</h4>
-
-              <span>2024 — Projet indépendant</span>
-
-              <p class="timeline-text">
-                Développement complet d'une plateforme web dédiée au sport en Algérie, reliant coachs et sportifs pour le suivi des entraînements et coaching personnalisé.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Application Gestion Médicale</h4>
-
-              <span>2023 — Projet universitaire</span>
-
-              <p class="timeline-text">
-                Application Java EE de gestion des médecins, patients et rendez-vous avec intégration de Smart Contracts et sécurisation via BCrypt.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Plateforme E-Learning Universitaire</h4>
-
-              <span>2023/2024 — Projet universitaire</span>
-
-              <p class="timeline-text">
-                Plateforme éducative permettant la gestion des enseignants et des étudiants avec accès en ligne aux cours, interface intuitive pour la gestion des données pédagogiques.
-              </p>
-
-            </li>
-
-          </ol>
-
-        </section>
-
-      
-      </article>
-
-
-
-
-
-      <!--
-        - #PORTFOLIO
-      -->
-
-      <article class="portfolio" data-page="portfolio">
-
-        <header>
-          <h2 class="h2 article-title">Portfolio</h2>
-        </header>
-
-        <section class="projects">
-
-          <ul class="filter-list">
-
-            <li class="filter-item">
-              <button class="active" data-filter-btn>All</button>
-            </li>
-
-            <li class="filter-item">
-              <button data-filter-btn>Web design</button>
-            </li>
-
-            <li class="filter-item">
-              <button data-filter-btn>Applications</button>
-            </li>
-
-            <li class="filter-item">
-              <button data-filter-btn>Web development</button>
-            </li>
-
-            <li class="filter-item">
-              <button class="active" data-filter-btn>security</button>
-            </li>
-          </ul>
-
-          <div class="filter-select-box">
-
-            <button class="filter-select" data-select>
-
-              <div class="select-value" data-selecct-value>Select category</div>
-
-              <div class="select-icon">
-                <ion-icon name="chevron-down"></ion-icon>
-              </div>
-
-            </button>
-
-            <ul class="select-list">
-
-              <li class="select-item">
-                <button data-select-item>All</button>
-              </li>
-
-              <li class="select-item">
-                <button data-select-item>Web design</button>
-              </li>
-
-              <li class="select-item">
-                <button data-select-item>Applications</button>
-              </li>
-
-              <li class="select-item">
-                <button data-select-item>Web development</button>
-              </li>
-
-            </ul>
-
-          </div>
-
-          <ul class="project-list">
-
-            <li class="project-item  active" data-filter-item data-category="security">
-              <a href="https://hoosid.github.io/shop">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                <img src="project-1.jpg" alt="SOC with AI" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">SOC Léger Open Source avec Agent IA</h3>
-
-                <p class="project-category">security</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web development">
-              <a href="https://github.com/hoosid/lrdsi">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-2.png" alt="SportDZ" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">Plateforme SportDZ</h3>
-
-                <p class="project-category">Web development</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web design">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-3.jpg" alt="Gestion Médicale" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">Application Gestion Médicale</h3>
-
-                <p class="project-category">Web design</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-4.png" alt="E-Learning" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">Plateforme E-Learning Universitaire</h3>
-
-                <p class="project-category">Applications</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web design">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-5.png" alt="future project" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">soon</h3>
-
-                <p class="project-category">Web design</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web design">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-6.png" alt="future project" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">soon</h3>
-
-                <p class="project-category">Web design</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web development">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-7.png" alt="future project" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">soon</h3>
-
-                <p class="project-category">Web development</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-8.jpg" alt="future project" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">soon</h3>
-
-                <p class="project-category">Applications</p>
-
-              </a>
-            </li>
-
-            <li class="project-item  active" data-filter-item data-category="web development">
-              <a href="#">
-
-                <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="project-9.png" alt="future project" loading="lazy">
-                </figure>
-
-                <h3 class="project-title">soon</h3>
-
-                <p class="project-category">Web development</p>
-
-              </a>
-            </li>
-
-          </ul>
-
-        </section>
-
-      </article>
-
-
-
-
-
-      <!--
-        - #BLOG
-      -->
-
-      <!-- <article class="blog" data-page="blog">
-
-        <header>
-          <h2 class="h2 article-title">Blog</h2>
-        </header>
-
-        <section class="blog-posts">
-
-          <ul class="blog-posts-list">
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-1.jpg" alt="Design conferences in 2022" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Design conferences in 2022</h3>
-
-                  <p class="blog-text">
-                    Veritatis et quasi architecto beatae vitae dicta sunt, explicabo.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-2.jpg" alt="Best fonts every designer" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Best fonts every designer</h3>
-
-                  <p class="blog-text">
-                    Sed ut perspiciatis, nam libero tempore, cum soluta nobis est eligendi.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-3.jpg" alt="Design digest #80" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Design digest #80</h3>
-
-                  <p class="blog-text">
-                    Excepteur sint occaecat cupidatat no proident, quis nostrum exercitationem ullam corporis suscipit.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-4.jpg" alt="UI interactions of the week" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">UI interactions of the week</h3>
-
-                  <p class="blog-text">
-                    Enim ad minim veniam, consectetur adipiscing elit, quis nostrud exercitation ullamco laboris nisi.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-5.jpg" alt="The forgotten art of spacing" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">The forgotten art of spacing</h3>
-
-                  <p class="blog-text">
-                    Maxime placeat, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="#">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-6.jpg" alt="Design digest #79" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category">Design</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2022-02-23">Fab 23, 2022</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title">Design digest #79</h3>
-
-                  <p class="blog-text">
-                    Optio cumque nihil impedit uo minus quod maxime placeat, velit esse cillum.
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-          </ul>
-
-        </section>
-
-      </article> -->
-
-
-
-
-
-      <!--
-        - #CONTACT
-      -->
-
-      <article class="contact" data-page="contact">
-
-        <header>
-          <h2 class="h2 article-title">Contact</h2>
-        </header>
-
-        <section class="mapbox" data-mapbox>
-          <figure>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3197.0!2d3.05!3d36.71!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sCERIST%20Alger!5e0!3m2!1sfr!2sdz!4v1712727075871!5m2!1sfr!2sdz" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </section>
-
-        <section class="contact-form">
-
-  <h3 class="h3 form-title">Contact</h3>
-
-  <div class="contact-info-box" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px 25px; margin-bottom: 25px;">
-    
-    <h4 class="h4 form-title" style="margin: 0 0 15px 0; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; font-weight: 400;">
-      <span style="color: var(--text-muted); display: inline-block; width: 60px;">Email :</span>
-      <a href="mailto:benayachesidali01@gmail.com" style="color: var(--accent-primary); text-decoration: none; font-weight: 500;">benayachesidali01@gmail.com</a>
-    </h4>
-   
-    <h4 class="h4 form-title" style="margin: 0; font-size: 0.95rem; font-weight: 400;">
-      <span style="color: var(--text-muted); display: inline-block; width: 60px;">Tel :</span>
-      <a href="tel:+213668859597" style="color: var(--accent-primary); text-decoration: none; font-weight: 500;">0668 85 95 97</a>
-    </h4>
-
-  </div>
-
-</section>
-
-      </article>
+        <div class="stat-card">
+          <div class="label" data-fr="Spécialité" data-en="Specialty">Spécialité</div>
+          <div class="value" data-fr="SOC · SIEM · Threat Intelligence · IA appliquée à la sécurité" data-en="SOC · SIEM · Threat Intelligence · AI applied to security">SOC · SIEM · Threat Intelligence · IA appliquée à la sécurité</div>
+        </div>
+        <div class="stat-card">
+          <div class="label" data-fr="Langues" data-en="Languages">Langues</div>
+          <div class="value" data-fr="Arabe (natif) · Français (courant) · Anglais (intermédiaire)" data-en="Arabic (native) · French (fluent) · English (intermediate)">Arabe (natif) · Français (courant) · Anglais (intermédiaire)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPETENCES -->
+  <section id="competences">
+    <div class="eyebrow" data-fr="02 · Compétences" data-en="02 · Skills">02 · Compétences</div>
+    <h2 class="section-title" data-fr="Boîte à outils" data-en="Toolbox">Boîte à outils</h2>
+    <div class="skills-grid">
+
+      <div class="skill-panel">
+        <div class="sp-head">
+          <h3 data-fr="Surveillance & Défense" data-en="Monitoring & Defense">Surveillance & Défense</h3>
+          <span class="sp-tag tag-defense">Blue Team</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip">SOC design</span><span class="chip">Wazuh (SIEM)</span>
+          <span class="chip">Suricata (IDS/IPS)</span><span class="chip">pfSense</span>
+          <span class="chip" data-fr="Analyse de logs" data-en="Log analysis">Analyse de logs</span><span class="chip" data-fr="Réponse aux incidents" data-en="Incident response">Réponse aux incidents</span>
+        </div>
+      </div>
+
+      <div class="skill-panel">
+        <div class="sp-head">
+          <h3 data-fr="Analyse des menaces & Pentest" data-en="Threat Analysis & Pentest">Analyse des menaces & Pentest</h3>
+          <span class="sp-tag tag-offense">Offensive</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip" data-fr="Tests d'intrusion" data-en="Penetration testing">Tests d'intrusion</span><span class="chip">Reconnaissance</span>
+          <span class="chip">Wireshark</span><span class="chip">Nmap</span>
+          <span class="chip">Kali Linux</span><span class="chip">MITRE ATT&CK</span>
+          <span class="chip">VirusTotal</span>
+        </div>
+      </div>
+
+      <div class="skill-panel">
+        <div class="sp-head">
+          <h3 data-fr="Automatisation & IA" data-en="Automation & AI">Automatisation & IA</h3>
+          <span class="sp-tag tag-auto">Automation</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip">n8n</span><span class="chip">Shuffle</span>
+          <span class="chip">scikit-learn</span><span class="chip" data-fr="Classification des menaces" data-en="Threat classification">Classification des menaces</span>
+          <span class="chip" data-fr="Orchestration de workflows" data-en="Workflow orchestration">Orchestration de workflows</span>
+        </div>
+      </div>
+
+      <div class="skill-panel">
+        <div class="sp-head">
+          <h3 data-fr="Systèmes & Réseaux" data-en="Systems & Networks">Systèmes & Réseaux</h3>
+          <span class="sp-tag tag-infra">Infra</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Linux</span><span class="chip">Windows</span>
+          <span class="chip">VMware</span><span class="chip">VirtualBox</span>
+          <span class="chip" data-fr="Administration réseau" data-en="Network administration">Administration réseau</span>
+        </div>
+      </div>
+
+      <div class="skill-panel" style="grid-column:1/-1;">
+        <div class="sp-head">
+          <h3 data-fr="Développement" data-en="Development">Développement</h3>
+          <span class="sp-tag tag-dev">Software</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Python</span><span class="chip">Java EE</span><span class="chip">SQL</span>
+          <span class="chip">PHP</span><span class="chip">JavaScript</span><span class="chip">React.js</span>
+          <span class="chip">Laravel</span><span class="chip">Express.js</span><span class="chip">WordPress</span>
+          <span class="chip">HTML / CSS</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="eyebrow" data-fr="03 · Services" data-en="03 · Services">03 · Services</div>
+    <h2 class="section-title" data-fr="Comment je peux aider votre entreprise" data-en="How I can help your business">Comment je peux aider votre entreprise</h2>
+    <p class="services-intro" data-fr="Du diagnostic à la mise en production, j'interviens sur la sécurisation de vos systèmes — que vous ayez besoin d'un SOC complet ou d'un accompagnement ponctuel sur un projet précis." data-en="From diagnosis to production, I work on securing your systems — whether you need a full SOC or one-off support on a specific project.">Du diagnostic à la mise en production, j'interviens sur la sécurisation de vos systèmes — que vous ayez besoin d'un SOC complet ou d'un accompagnement ponctuel sur un projet précis.</p>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="sv-icon">🛡</div>
+        <h3 data-fr="Conception & déploiement de SOC" data-en="SOC design & deployment">Conception & déploiement de SOC</h3>
+        <p data-fr="Mise en place d'un centre de supervision de sécurité open source (Wazuh, Suricata, pfSense) adapté à la taille de votre infrastructure, sans licences coûteuses." data-en="Setting up an open source security operations center (Wazuh, Suricata, pfSense) sized to your infrastructure, without costly licensing.">Mise en place d'un centre de supervision de sécurité open source (Wazuh, Suricata, pfSense) adapté à la taille de votre infrastructure, sans licences coûteuses.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="PME, startups, administrations sans SOC existant" data-en="SMBs, startups, organizations without an existing SOC">PME, startups, administrations sans SOC existant</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="sv-icon">🧠</div>
+        <h3 data-fr="Détection des menaces par IA" data-en="AI-driven threat detection">Détection des menaces par IA</h3>
+        <p data-fr="Développement de modèles de machine learning pour détecter le phishing et classer les alertes (TF-IDF, Random Forest, SVM), afin de réduire la charge de vos équipes." data-en="Building machine learning models to detect phishing and classify alerts (TF-IDF, Random Forest, SVM), reducing the load on your team.">Développement de modèles de machine learning pour détecter le phishing et classer les alertes (TF-IDF, Random Forest, SVM), afin de réduire la charge de vos équipes.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="Équipes IT/sécurité noyées sous les faux positifs" data-en="IT/security teams overwhelmed by false positives">Équipes IT/sécurité noyées sous les faux positifs</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="sv-icon">⚙</div>
+        <h3 data-fr="Automatisation de la réponse aux incidents" data-en="Incident response automation">Automatisation de la réponse aux incidents</h3>
+        <p data-fr="Création de workflows d'automatisation (n8n, Shuffle) : tri des alertes, scoring des menaces, blocage automatique d'IP, pour gagner un temps précieux entre détection et remédiation." data-en="Building automation workflows (n8n, Shuffle): alert triage, threat scoring, automatic IP blocking, saving valuable time between detection and remediation.">Création de workflows d'automatisation (n8n, Shuffle) : tri des alertes, scoring des menaces, blocage automatique d'IP, pour gagner un temps précieux entre détection et remédiation.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="Entreprises voulant réduire leur temps de réponse" data-en="Companies looking to cut response time">Entreprises voulant réduire leur temps de réponse</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="sv-icon">🔎</div>
+        <h3 data-fr="Audit & tests d'intrusion" data-en="Audit & penetration testing">Audit & tests d'intrusion</h3>
+        <p data-fr="Évaluation des vulnérabilités de votre réseau et de vos applications (Nmap, Wireshark, Kali Linux), avec un rapport clair et des recommandations concrètes." data-en="Assessing the vulnerabilities of your network and applications (Nmap, Wireshark, Kali Linux), with a clear report and concrete recommendations.">Évaluation des vulnérabilités de votre réseau et de vos applications (Nmap, Wireshark, Kali Linux), avec un rapport clair et des recommandations concrètes.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="Entreprises avant mise en production ou audit de conformité" data-en="Companies before go-live or a compliance audit">Entreprises avant mise en production ou audit de conformité</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="sv-icon">🖥</div>
+        <h3 data-fr="Administration systèmes & réseaux" data-en="Systems & network administration">Administration systèmes & réseaux</h3>
+        <p data-fr="Gestion et sécurisation de parcs Linux/Windows, virtualisation (VMware, VirtualBox), configuration réseau et résolution d'incidents." data-en="Managing and securing Linux/Windows environments, virtualization (VMware, VirtualBox), network configuration and incident resolution.">Gestion et sécurisation de parcs Linux/Windows, virtualisation (VMware, VirtualBox), configuration réseau et résolution d'incidents.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="Structures ayant besoin d'un support infra fiable" data-en="Organizations needing reliable infra support">Structures ayant besoin d'un support infra fiable</span></div>
+      </div>
+
+      <div class="service-card">
+        <div class="sv-icon">💻</div>
+        <h3 data-fr="Développement d'applications sécurisées" data-en="Secure application development">Développement d'applications sécurisées</h3>
+        <p data-fr="Conception d'applications web et métier (Python, Java EE, Laravel, React.js) avec la sécurité intégrée dès la conception : authentification, chiffrement, bonnes pratiques." data-en="Building web and business applications (Python, Java EE, Laravel, React.js) with security built in from the start: authentication, encryption, best practices.">Conception d'applications web et métier (Python, Java EE, Laravel, React.js) avec la sécurité intégrée dès la conception : authentification, chiffrement, bonnes pratiques.</p>
+        <div class="sv-for"><b data-fr="Pour :" data-en="For:">Pour :</b> <span data-fr="Entreprises lançant un nouveau produit ou outil interne" data-en="Companies launching a new product or internal tool">Entreprises lançant un nouveau produit ou outil interne</span></div>
+      </div>
 
     </div>
 
-  </main>
+    <div class="services-cta">
+      <a href="#contact" class="btn btn-primary" data-fr="Discuter de votre besoin →" data-en="Discuss your project →">Discuter de votre besoin →</a>
+      <a class="btn btn-ghost" href="BENAYACHE_SIDALI_CV.pdf" download data-fr="Télécharger mon CV" data-en="Download my resume">Télécharger mon CV</a>
+    </div>
+  </section>
 
+  <!-- EXPERIENCE / PROJETS -->
+  <section id="experience">
+    <div class="eyebrow" data-fr="04 · Stage & Projets" data-en="04 · Internship & Projects">04 · Stage & Projets</div>
+    <h2 class="section-title" data-fr="Journal des interventions" data-en="Project log">Journal des interventions</h2>
 
+    <div class="log-entry">
+      <div class="log-time">2025 — 2026</div>
+      <div class="log-body">
+        <h3 data-fr="SOC léger open source pour Algérie Poste" data-en="Lightweight open source SOC for Algérie Poste">SOC léger open source pour Algérie Poste</h3>
+        <div class="org" data-fr="Algérie Poste × Université de Blida 1 — Projet de fin d'études (Master)" data-en="Algérie Poste × University of Blida 1 — Master's final-year project">Algérie Poste × Université de Blida 1 — Projet de fin d'études (Master)</div>
+        <ul>
+          <li data-fr="Conception et déploiement d'un SOC open source complet (Wazuh, pfSense, Suricata, n8n)" data-en="Design and deployment of a complete open source SOC (Wazuh, pfSense, Suricata, n8n)">Conception et déploiement d'un SOC open source complet (Wazuh, pfSense, Suricata, n8n)</li>
+          <li data-fr="Développement d'un module de détection de phishing par IA (TF-IDF, features heuristiques, Random Forest / SVM / Régression Logistique)" data-en="Development of an AI-based phishing detection module (TF-IDF, heuristic features, Random Forest / SVM / Logistic Regression)">Développement d'un module de détection de phishing par IA (TF-IDF, features heuristiques, Random Forest / SVM / Régression Logistique)</li>
+          <li data-fr="Automatisation de la réponse aux incidents via workflows n8n : tri des alertes, scoring des menaces, blocage automatique d'IP via pfSense" data-en="Incident response automation via n8n workflows: alert triage, threat scoring, automatic IP blocking via pfSense">Automatisation de la réponse aux incidents via workflows n8n : tri des alertes, scoring des menaces, blocage automatique d'IP via pfSense</li>
+        </ul>
+        <div class="chip-row">
+          <span class="chip">Wazuh</span><span class="chip">Suricata</span><span class="chip">pfSense</span><span class="chip">n8n</span><span class="chip">scikit-learn</span>
+        </div>
+      </div>
+    </div>
 
+    <div class="log-entry">
+      <div class="log-time">2024 — 2025</div>
+      <div class="log-body">
+        <h3 data-fr="Application Java EE — Gestion Médicale" data-en="Java EE Application — Medical Management">Application Java EE — Gestion Médicale</h3>
+        <div class="org" data-fr="Université Blida 1 — Développement Back-End & Sécurité · Projet Master 1" data-en="University of Blida 1 — Back-End Development & Security · Master 1 project">Université Blida 1 — Développement Back-End & Sécurité · Projet Master 1</div>
+        <ul>
+          <li data-fr="Application de gestion médicale (médecins, patients, rendez-vous) en architecture MVC" data-en="Medical management application (doctors, patients, appointments) built on MVC architecture">Application de gestion médicale (médecins, patients, rendez-vous) en architecture MVC</li>
+          <li data-fr="Intégration de Smart Contracts Web3 et sécurisation des données avec BCrypt" data-en="Web3 Smart Contract integration and data security with BCrypt">Intégration de Smart Contracts Web3 et sécurisation des données avec BCrypt</li>
+        </ul>
+        <div class="chip-row">
+          <span class="chip">Java EE</span><span class="chip">MVC</span><span class="chip">Web3</span><span class="chip">BCrypt</span>
+        </div>
+      </div>
+    </div>
 
-  <!--
-    - custom js link
-  -->
-  <script src="script.js"></script>
+    <div class="log-entry">
+      <div class="log-time">2023 — 2024</div>
+      <div class="log-body">
+        <h3 data-fr="Plateforme E-Learning" data-en="E-Learning Platform">Plateforme E-Learning</h3>
+        <div class="org" data-fr="Université Blida 1 — Développement Web · Projet Licence" data-en="University of Blida 1 — Web Development · Bachelor's project">Université Blida 1 — Développement Web · Projet Licence</div>
+        <ul>
+          <li data-fr="Conception d'une plateforme de gestion des données professeurs / élèves" data-en="Design of a platform to manage teacher / student data">Conception d'une plateforme de gestion des données professeurs / élèves</li>
+          <li data-fr="Accès en ligne aux cours et ressources pédagogiques" data-en="Online access to courses and learning resources">Accès en ligne aux cours et ressources pédagogiques</li>
+        </ul>
+        <div class="chip-row">
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">Express js</span><span class="chip">SQL</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!--
-    - ionicon link
-  -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <!-- FORMATION -->
+  <section id="formation">
+    <div class="eyebrow" data-fr="05 · Formation" data-en="05 · Education">05 · Formation</div>
+    <h2 class="section-title" data-fr="Études & certifications" data-en="Education & certifications">Études & certifications</h2>
+
+    <div class="edu-item">
+      <div>
+        <h3 data-fr="Master 2 — Sécurité des Systèmes Informatiques" data-en="Master's — Information Systems Security">Master 2 — Sécurité des Systèmes Informatiques</h3>
+        <p>Université Saad Dahlab, Blida 1, Algérie</p>
+      </div>
+      <div class="edu-year">2025 — 2026</div>
+    </div>
+    <div class="edu-item">
+      <div>
+        <h3 data-fr="Licence LMD — Mathématiques & Informatique (SIQ)" data-en="Bachelor's LMD — Mathematics & Computer Science (SIQ)">Licence LMD — Mathématiques & Informatique (SIQ)</h3>
+        <p>Université Saad Dahlab, Blida 1, Algérie</p>
+      </div>
+      <div class="edu-year">2021 — 2024</div>
+    </div>
+    <div class="edu-item">
+      <div>
+        <h3 data-fr="CCNA 1, 2, 3 — Réseaux, Switching, Routing & Enterprise Networking" data-en="CCNA 1, 2, 3 — Networking, Switching, Routing & Enterprise Networking">CCNA 1, 2, 3 — Réseaux, Switching, Routing & Enterprise Networking</h3>
+        <p>INSFP Blida / Cisco Networking Academy</p>
+      </div>
+      <div class="edu-year">2024 — 2026</div>
+    </div>
+    <div class="edu-item">
+      <div>
+        <h3 data-fr="Ethical Hacker & Cybersécurité" data-en="Ethical Hacking & Cybersecurity">Ethical Hacker & Cybersécurité</h3>
+        <p>Cisco Networking Academy</p>
+      </div>
+      <div class="edu-year">2024 — 2025</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="eyebrow" data-fr="06 · Contact" data-en="06 · Contact">06 · Contact</div>
+    <div class="contact-panel">
+      <h2 data-fr="Discutons de votre prochaine ligne de défense" data-en="Let's talk about your next line of defense">Discutons de votre prochaine ligne de défense</h2>
+      <p class="lead" data-fr="Disponible pour des opportunités en SOC, threat detection et sécurité offensive/défensive, ainsi que pour des missions ponctuelles auprès d'entreprises. Réponse rapide par email ou téléphone." data-en="Available for opportunities in SOC, threat detection and offensive/defensive security, as well as one-off engagements with companies. Quick response by email or phone.">Disponible pour des opportunités en SOC, threat detection et sécurité offensive/défensive. Réponse rapide par email ou téléphone.</p>
+      <div class="contact-list">
+        <a href="mailto:benayachesidali01@gmail.com"><span class="ico">✉</span> benayachesidali01@gmail.com</a>
+        <a href="tel:+213668859597"><span class="ico">☎</span> 0668 85 95 97</a>
+      </div>
+      <div class="contact-list">
+        <div class="row"><span class="ico">📍</span> Algérie, Algérie</div>
+        <a href="https://www.linkedin.com/in/benayache-sidali/" target="_blank" rel="noopener"><span class="ico">in</span> linkedin.com/in/benayache-sidali</a>
+        <a class="cv-btn" style="justify-content:center;" href="BENAYACHE_SIDALI_CV.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+          <span data-fr="Télécharger le CV (PDF)" data-en="Download resume (PDF)">Télécharger le CV (PDF)</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span data-fr="© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC." data-en="© 2026 BENAYACHE Sidali — Designed like a SOC control panel.">© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC.</span>
+</footer>
+
+<script>
+  // Terminal boot sequence
+  const termBody = document.getElementById('termBody');
+  const termLines = {
+    fr: [
+      { text: '$ ./init_profile.sh', cls: 't-prompt' },
+      { text: '[OK] Chargement identité...', cls: 't-ok' },
+      { text: '[OK] Rôle détecté : SOC Analyst', cls: 't-ok' },
+      { text: '[OK] Modules chargés : SIEM, IDS/IPS, Threat Intel', cls: 't-ok' },
+      { text: '[OK] Statut : Master en Sécurité des Systèmes Informatiques', cls: 't-ok' },
+      { text: '$ whoami', cls: 't-prompt' },
+      { text: 'BENAYACHE Sidali — Analyste Cybersécurité', cls: 't-line' },
+    ],
+    en: [
+      { text: '$ ./init_profile.sh', cls: 't-prompt' },
+      { text: '[OK] Loading identity...', cls: 't-ok' },
+      { text: '[OK] Role detected: SOC Analyst', cls: 't-ok' },
+      { text: '[OK] Modules loaded: SIEM, IDS/IPS, Threat Intel', cls: 't-ok' },
+      { text: "[OK] Status: Master's in Information Systems Security", cls: 't-ok' },
+      { text: '$ whoami', cls: 't-prompt' },
+      { text: 'BENAYACHE Sidali — Cybersecurity Analyst', cls: 't-line' },
+    ]
+  };
+  let currentLang = 'fr';
+  let lines = termLines[currentLang];
+
+  function typeLine(el, text, speed, cb){
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 't-cursor';
+    function step(){
+      if(i <= text.length){
+        el.textContent = text.slice(0, i);
+        el.appendChild(cursor);
+        i++;
+        setTimeout(step, speed);
+      } else {
+        cursor.remove();
+        if(cb) cb();
+      }
+    }
+    step();
+  }
+
+  function runBoot(idx){
+    if(idx >= lines.length){
+      revealHero();
+      return;
+    }
+    const lineData = lines[idx];
+    const div = document.createElement('div');
+    div.className = 't-line ' + (lineData.cls || '');
+    termBody.appendChild(div);
+    typeLine(div, lineData.text, 14, () => {
+      setTimeout(() => runBoot(idx + 1), 130);
+    });
+  }
+
+  function revealHero(){
+    const seq = ['heroName','heroRole','heroDesc','heroCtas','heroMeta'];
+    seq.forEach((id, i) => {
+      const el = document.getElementById(id);
+      setTimeout(() => { el.classList.add('fade-in'); }, i * 130);
+    });
+  }
+
+  runBoot(0);
+
+  // reduced motion: skip typing animation
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    termBody.innerHTML = lines.map(l => `<div class="t-line ${l.cls||''}">${l.text}</div>`).join('');
+    revealHero();
+  }
+
+  // ---------- language switching (single FR / EN toggle) ----------
+  const i18nEls = document.querySelectorAll('[data-fr][data-en]');
+  const langToggleBtn = document.getElementById('langToggle');
+  const langFlagEl = langToggleBtn.querySelector('.flag');
+  const langCodeEl = langToggleBtn.querySelector('.lg-code');
+  const LANG_META = {
+    fr: { flag: 'FR', code: 'en', label: 'Passer en anglais / Switch to English' },
+    en: { flag: 'EN', code: 'fr', label: 'Passer en français / Switch to French' }
+  };
+
+  function renderTerminalStatic(lang){
+    termBody.innerHTML = termLines[lang].map(l => `<div class="t-line ${l.cls||''}">${l.text}</div>`).join('');
+  }
+
+  function applyLang(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+
+    i18nEls.forEach(el => {
+      const val = lang === 'en' ? el.dataset.en : el.dataset.fr;
+      if (val !== undefined) el.innerHTML = val;
+    });
+
+    langToggleBtn.dataset.lang = lang;
+    langFlagEl.textContent = LANG_META[lang].flag;
+    langCodeEl.textContent = LANG_META[lang].code;
+    langToggleBtn.setAttribute('aria-label', LANG_META[lang].label);
+
+    // keep the terminal boot text in sync with the chosen language
+    renderTerminalStatic(lang);
+
+    try { localStorage.setItem('portfolio-lang', lang); } catch (e) {}
+  }
+
+  langToggleBtn.addEventListener('click', () => {
+    applyLang(currentLang === 'fr' ? 'en' : 'fr');
+  });
+
+  let savedLang = 'fr';
+  try { savedLang = localStorage.getItem('portfolio-lang') || 'fr'; } catch (e) {}
+  if (savedLang === 'en') {
+    // apply after the boot animation finishes so the intro sequence still plays once
+    setTimeout(() => applyLang('en'), lines.length * 200 + 400);
+  }
+
+  // ---------- header scroll state + active section tracking ----------
+  const headerEl = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    headerEl.classList.toggle('scrolled', window.scrollY > 12);
+  }, { passive:true });
+
+  const navLinkEls = document.querySelectorAll('.nav-links a');
+  const sectionEls = Array.from(navLinkEls)
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window && sectionEls.length){
+    const linkFor = id => document.querySelector(`.nav-links a[href="#${id}"]`);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const link = linkFor(entry.target.id);
+        if (!link) return;
+        if (entry.isIntersecting){
+          navLinkEls.forEach(a => a.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sectionEls.forEach(sec => observer.observe(sec));
+  }
+</script>
 
 </body>
-
 </html>
