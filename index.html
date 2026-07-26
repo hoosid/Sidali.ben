@@ -704,9 +704,95 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
   }
+
+  /* ---------- preloader ---------- */
+  html.is-loading, html.is-loading body{ overflow:hidden; height:100%; }
+  #preloader{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    background:linear-gradient(180deg, #04070f 0%, #061024 38%, #030711 100%);
+    transition:opacity .55s ease, visibility .55s ease;
+  }
+  #preloader.is-hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .preloader-logo{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .preloader-logo b{ color:var(--text); font-weight:600; }
+  .preloader-logo .dot{
+    width:7px; height:7px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--accent);
+    animation:hubPulse 1.3s ease-in-out infinite;
+  }
+  .preloader-bar-track{
+    width:240px;
+    height:3px;
+    background:rgba(255,255,255,0.08);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .preloader-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--accent), var(--blue));
+    box-shadow:0 0 10px var(--accent);
+  }
+  .preloader-pct{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    color:var(--text-faint);
+  }
+
+  /* site content stays hidden until the preloader finishes, then fades in */
+  #siteContent{
+    opacity:0;
+    transition:opacity .6s ease;
+  }
+  #siteContent.is-visible{ opacity:1; }
+
+  /* ---------- scroll reveal (arrival animation for text/blocks) ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .8s cubic-bezier(.16,.8,.24,1), transform .8s cubic-bezier(.16,.8,.24,1);
+    will-change:opacity, transform;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .reveal-eyebrow{ transform:translateX(-16px); }
+  .reveal-eyebrow.is-visible{ transform:translateX(0); }
 </style>
 </head>
 <body>
+
+<div id="preloader">
+  <div class="preloader-logo"><span class="dot"></span><b>BENAYACHE SIDALI</b> — INIT</div>
+  <div class="preloader-bar-track"><div class="preloader-bar-fill" id="preloaderBarFill"></div></div>
+  <div class="preloader-pct" id="preloaderPct">0%</div>
+</div>
+
+<div id="siteContent">
 
 <div class="grid-bg"></div>
 <svg class="bg-network" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2010,7 +2096,7 @@
       <a href="#contact">Contact</a>
     </div>
     <div class="nav-controls">
-      <a class="cv-btn" href="BENAYACHE_SIDALI_CV.pdf" download aria-label="Télécharger le CV / Download resume">
+      <a class="cv-btn cv-link" href="BENAYACHE_SIDALI_CV_fr.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download aria-label="Télécharger le CV / Download resume">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         <span data-fr="CV" data-en="Resume">CV</span>
       </a>
@@ -2027,14 +2113,6 @@
   <!-- HERO -->
   <section class="hero" id="hero">
     <div class="hero-inner">
-      <div class="terminal">
-        <div class="terminal-bar">
-          <span class="tb-dot r"></span><span class="tb-dot y"></span><span class="tb-dot g"></span>
-          <span class="terminal-title">soc-console — bash — 82×14</span>
-        </div>
-        <div class="terminal-body" id="termBody"></div>
-      </div>
-
       <h1 class="hero-name" id="heroName">BENAYACHE Sidali</h1>
       <p class="hero-role" id="heroRole" data-fr="// Analyste Cybersécurité — SOC · SIEM · Threat Detection · Incident Response" data-en="// Cybersecurity Analyst — SOC · SIEM · Threat Detection · Incident Response">// Analyste Cybersécurité — SOC · SIEM · Threat Detection · Incident Response</p>
       <p class="hero-desc" id="heroDesc" data-fr="Master en Sécurité des Systèmes Informatiques. Je conçois des SOC open source, je détecte les menaces avec l'IA, et j'automatise la réponse aux incidents pour réduire le temps entre alerte et remédiation." data-en="Master's degree in Information Systems Security. I design open source SOCs, detect threats with AI, and automate incident response to reduce the time between alert and remediation.">Master en Sécurité des Systèmes Informatiques. Je conçois des SOC open source, je détecte les menaces avec l'IA, et j'automatise la réponse aux incidents pour réduire le temps entre alerte et remédiation.</p>
@@ -2204,7 +2282,7 @@
 
     <div class="services-cta">
       <a href="#contact" class="btn btn-primary" data-fr="Discuter de votre besoin →" data-en="Discuss your project →">Discuter de votre besoin →</a>
-      <a class="btn btn-ghost" href="BENAYACHE_SIDALI_CV.pdf" download data-fr="Télécharger mon CV" data-en="Download my resume">Télécharger mon CV</a>
+      <a class="btn btn-ghost cv-link" href="BENAYACHE_SIDALI_CV_FR.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download data-fr="Télécharger mon CV" data-en="Download my resume">Télécharger mon CV</a>
     </div>
   </section>
 
@@ -2308,7 +2386,7 @@
       <div class="contact-list">
         <div class="row"><span class="ico">📍</span> Algérie, Algérie</div>
         <a href="https://www.linkedin.com/in/benayache-sidali/" target="_blank" rel="noopener"><span class="ico">in</span> linkedin.com/in/benayache-sidali</a>
-        <a class="cv-btn" style="justify-content:center;" href="BENAYACHE_SIDALI_CV.pdf" download>
+        <a class="cv-btn cv-link" style="justify-content:center;" href="BENAYACHE_SIDALI_CV_FR.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
           <span data-fr="Télécharger le CV (PDF)" data-en="Download resume (PDF)">Télécharger le CV (PDF)</span>
         </a>
@@ -2322,79 +2400,56 @@
   <span data-fr="© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC." data-en="© 2026 BENAYACHE Sidali — Designed like a SOC control panel.">© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC.</span>
 </footer>
 
-<script>
-  // Terminal boot sequence
-  const termBody = document.getElementById('termBody');
-  const termLines = {
-    fr: [
-      { text: '$ ./init_profile.sh', cls: 't-prompt' },
-      { text: '[OK] Chargement identité...', cls: 't-ok' },
-      { text: '[OK] Rôle détecté : SOC Analyst', cls: 't-ok' },
-      { text: '[OK] Modules chargés : SIEM, IDS/IPS, Threat Intel', cls: 't-ok' },
-      { text: '[OK] Statut : Master en Sécurité des Systèmes Informatiques', cls: 't-ok' },
-      { text: '$ whoami', cls: 't-prompt' },
-      { text: 'BENAYACHE Sidali — Analyste Cybersécurité', cls: 't-line' },
-    ],
-    en: [
-      { text: '$ ./init_profile.sh', cls: 't-prompt' },
-      { text: '[OK] Loading identity...', cls: 't-ok' },
-      { text: '[OK] Role detected: SOC Analyst', cls: 't-ok' },
-      { text: '[OK] Modules loaded: SIEM, IDS/IPS, Threat Intel', cls: 't-ok' },
-      { text: "[OK] Status: Master's in Information Systems Security", cls: 't-ok' },
-      { text: '$ whoami', cls: 't-prompt' },
-      { text: 'BENAYACHE Sidali — Cybersecurity Analyst', cls: 't-line' },
-    ]
-  };
-  let currentLang = 'fr';
-  let lines = termLines[currentLang];
+</div><!-- /#siteContent -->
 
-  function typeLine(el, text, speed, cb){
-    let i = 0;
-    const cursor = document.createElement('span');
-    cursor.className = 't-cursor';
-    function step(){
-      if(i <= text.length){
-        el.textContent = text.slice(0, i);
-        el.appendChild(cursor);
-        i++;
-        setTimeout(step, speed);
+<script>
+  // ---------- preloader ----------
+  document.documentElement.classList.add('is-loading');
+  (function preload(){
+    const preloader = document.getElementById('preloader');
+    const barFill = document.getElementById('preloaderBarFill');
+    const pctEl = document.getElementById('preloaderPct');
+    const siteContent = document.getElementById('siteContent');
+    const MIN_DURATION = 1400; // ms, purely visual minimum so the loader doesn't just flash
+    const start = performance.now();
+
+    function frame(now){
+      const elapsed = now - start;
+      const pct = Math.min(100, Math.round((elapsed / MIN_DURATION) * 100));
+      barFill.style.width = pct + '%';
+      pctEl.textContent = pct + '%';
+      if (elapsed < MIN_DURATION) {
+        requestAnimationFrame(frame);
       } else {
-        cursor.remove();
-        if(cb) cb();
+        reveal();
       }
     }
-    step();
-  }
 
-  function runBoot(idx){
-    if(idx >= lines.length){
-      revealHero();
-      return;
+    function reveal(){
+      preloader.classList.add('is-hidden');
+      document.documentElement.classList.remove('is-loading');
+      siteContent.classList.add('is-visible');
+      setTimeout(() => preloader.remove(), 600);
     }
-    const lineData = lines[idx];
-    const div = document.createElement('div');
-    div.className = 't-line ' + (lineData.cls || '');
-    termBody.appendChild(div);
-    typeLine(div, lineData.text, 14, () => {
-      setTimeout(() => runBoot(idx + 1), 130);
-    });
-  }
+
+    requestAnimationFrame(frame);
+
+    // safety net: never let the loader block the site for more than 4s
+    setTimeout(reveal, 4000);
+  })();
+
+  // Hero reveal (simple fade-in, no terminal boot animation)
+  let currentLang = 'fr';
 
   function revealHero(){
     const seq = ['heroName','heroRole','heroDesc','heroCtas','heroMeta'];
     seq.forEach((id, i) => {
       const el = document.getElementById(id);
-      setTimeout(() => { el.classList.add('fade-in'); }, i * 130);
+      setTimeout(() => { el.classList.add('fade-in'); }, i * 90);
     });
   }
 
-  runBoot(0);
-
-  // reduced motion: skip typing animation
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    termBody.innerHTML = lines.map(l => `<div class="t-line ${l.cls||''}">${l.text}</div>`).join('');
-    revealHero();
-  }
+  revealHero();
 
   // ---------- language switching (single FR / EN toggle) ----------
   const i18nEls = document.querySelectorAll('[data-fr][data-en]');
@@ -2405,10 +2460,6 @@
     fr: { flag: 'FR', code: 'en', label: 'Passer en anglais / Switch to English' },
     en: { flag: 'EN', code: 'fr', label: 'Passer en français / Switch to French' }
   };
-
-  function renderTerminalStatic(lang){
-    termBody.innerHTML = termLines[lang].map(l => `<div class="t-line ${l.cls||''}">${l.text}</div>`).join('');
-  }
 
   function applyLang(lang){
     currentLang = lang;
@@ -2424,8 +2475,11 @@
     langCodeEl.textContent = LANG_META[lang].code;
     langToggleBtn.setAttribute('aria-label', LANG_META[lang].label);
 
-    // keep the terminal boot text in sync with the chosen language
-    renderTerminalStatic(lang);
+    // point every "download CV" link to the CV file matching the current language
+    document.querySelectorAll('.cv-link').forEach(el => {
+      const href = lang === 'en' ? el.dataset.hrefEn : el.dataset.hrefFr;
+      if (href) el.setAttribute('href', href);
+    });
 
     try { localStorage.setItem('portfolio-lang', lang); } catch (e) {}
   }
@@ -2437,9 +2491,57 @@
   let savedLang = 'fr';
   try { savedLang = localStorage.getItem('portfolio-lang') || 'fr'; } catch (e) {}
   if (savedLang === 'en') {
-    // apply after the boot animation finishes so the intro sequence still plays once
-    setTimeout(() => applyLang('en'), lines.length * 200 + 400);
+    applyLang('en');
   }
+
+  // ---------- scroll reveal ("arrival" animation for text/blocks) ----------
+  (function initScrollReveal(){
+    const eyebrowEls = document.querySelectorAll('.eyebrow');
+    const targetEls = document.querySelectorAll([
+      'h2.section-title',
+      '.profil-text',
+      '.stat-card',
+      '.services-intro',
+      '.skill-panel',
+      '.service-card',
+      '.services-cta',
+      '.log-entry',
+      '.edu-item',
+      '.contact-panel'
+    ].join(','));
+
+    eyebrowEls.forEach(el => el.classList.add('reveal', 'reveal-eyebrow'));
+    targetEls.forEach(el => el.classList.add('reveal'));
+
+    const allReveal = document.querySelectorAll('.reveal');
+
+    // stagger elements that share the same direct parent (cards in a grid, list items, etc.)
+    const siblingIndex = new Map();
+    allReveal.forEach(el => {
+      const parent = el.parentElement;
+      const idx = siblingIndex.get(parent) || 0;
+      el.style.transitionDelay = Math.min(idx * 80, 400) + 'ms';
+      siblingIndex.set(parent, idx + 1);
+    });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      allReveal.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    allReveal.forEach(el => observer.observe(el));
+  })();
 
   // ---------- header scroll state + active section tracking ----------
   const headerEl = document.querySelector('header');
