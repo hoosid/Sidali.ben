@@ -782,6 +782,134 @@
   }
   .reveal-eyebrow{ transform:translateX(-16px); }
   .reveal-eyebrow.is-visible{ transform:translateX(0); }
+
+  /* ---------- CV preview modal ---------- */
+  .cv-modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    background:rgba(3,6,12,0.78);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .25s ease, visibility .25s ease;
+  }
+  .cv-modal-overlay.is-open{
+    opacity:1;
+    visibility:visible;
+  }
+  .cv-modal{
+    width:min(880px, 100%);
+    height:min(88vh, 1000px);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 40px 100px -30px rgba(0,0,0,0.75);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    transform:translateY(16px) scale(0.98);
+    transition:transform .25s ease;
+  }
+  .cv-modal-overlay.is-open .cv-modal{ transform:translateY(0) scale(1); }
+  .cv-modal-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:14px 18px;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+  }
+  .cv-modal-title{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.04em;
+    color:var(--text-dim);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:0;
+  }
+  .cv-modal-title .dot{
+    width:7px; height:7px;
+    background:var(--accent);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--accent);
+    flex-shrink:0;
+  }
+  .cv-modal-title span.fname{
+    color:var(--text);
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .cv-modal-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .cv-modal-btn{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:600;
+    padding:8px 13px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    color:var(--text);
+    background:var(--panel-2);
+    cursor:pointer;
+    transition: all .18s ease;
+  }
+  .cv-modal-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .cv-modal-btn.download{
+    color:#06120d;
+    background:linear-gradient(135deg, var(--accent), #6fc4ff);
+    border-color:transparent;
+  }
+  .cv-modal-btn.download:hover{ transform:translateY(-1px); box-shadow:0 4px 20px rgba(95,168,224,0.45); color:#06120d; }
+  .cv-modal-btn svg{ width:14px; height:14px; flex-shrink:0; }
+  .cv-modal-close{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:32px; height:32px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text-dim);
+    cursor:pointer;
+    transition: all .18s ease;
+    flex-shrink:0;
+  }
+  .cv-modal-close:hover{ border-color:var(--red); color:var(--red); }
+  .cv-modal-close svg{ width:14px; height:14px; }
+  .cv-modal-body{
+    flex:1;
+    min-height:0;
+    background:#0a0d13;
+  }
+  .cv-modal-body iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    display:block;
+  }
+  @media (max-width:640px){
+    .cv-modal-overlay{ padding:14px; }
+    .cv-modal{ height:min(90vh, 1000px); }
+    .cv-modal-title span.fname{ display:none; }
+  }
 </style>
 </head>
 <body>
@@ -2396,6 +2524,31 @@
 
 </main>
 
+<!-- CV PREVIEW MODAL -->
+<div class="cv-modal-overlay" id="cvModalOverlay" role="dialog" aria-modal="true" aria-labelledby="cvModalTitle">
+  <div class="cv-modal">
+    <div class="cv-modal-bar">
+      <div class="cv-modal-title" id="cvModalTitle">
+        <span class="dot"></span>
+        <span data-fr="Aperçu du CV" data-en="Resume preview">Aperçu du CV</span>
+        <span class="fname" id="cvModalFileName">BENAYACHE_SIDALI_CV_fr.pdf</span>
+      </div>
+      <div class="cv-modal-actions">
+        <a class="cv-modal-btn download" id="cvModalDownload" href="BENAYACHE_SIDALI_CV_fr.pdf" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+          <span data-fr="Télécharger" data-en="Download">Télécharger</span>
+        </a>
+        <button type="button" class="cv-modal-close" id="cvModalClose" aria-label="Fermer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="cv-modal-body">
+      <iframe id="cvModalFrame" src="" title="CV preview"></iframe>
+    </div>
+  </div>
+</div>
+
 <footer>
   <span data-fr="© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC." data-en="© 2026 BENAYACHE Sidali — Designed like a SOC control panel.">© 2026 BENAYACHE Sidali — Conçu comme un panneau de contrôle SOC.</span>
 </footer>
@@ -2464,18 +2617,64 @@
   // ---------- CV download link (dépend uniquement de la langue affichée) ----------
   // Si la page est en FR -> BENAYACHE_SIDALI_CV_fr.pdf
   // Si la page est en EN -> BENAYACHE_SIDALI_CV_en.pdf
+  const CV_FILES = {
+    fr: 'BENAYACHE_SIDALI_CV_fr.pdf',
+    en: 'BENAYACHE_SIDALI_CV_en.pdf'
+  };
+
   function updateCvLinks(lang){
-    const CV_FILES = {
-      fr: 'BENAYACHE_SIDALI_CV_fr.pdf',
-      en: 'BENAYACHE_SIDALI_CV_en.pdf'
-    };
     const fileName = CV_FILES[lang] || CV_FILES.fr;
 
     document.querySelectorAll('.cv-link').forEach(el => {
       el.setAttribute('href', fileName);
       el.setAttribute('download', fileName);
     });
+
+    // si la modale d'aperçu est déjà ouverte, la resynchroniser avec la nouvelle langue
+    if (cvModalOverlay && cvModalOverlay.classList.contains('is-open')) {
+      openCvModal(lang);
+    }
   }
+
+  // ---------- CV preview modal (aperçu centré + téléchargement) ----------
+  const cvModalOverlay = document.getElementById('cvModalOverlay');
+  const cvModalFrame = document.getElementById('cvModalFrame');
+  const cvModalDownload = document.getElementById('cvModalDownload');
+  const cvModalFileName = document.getElementById('cvModalFileName');
+  const cvModalClose = document.getElementById('cvModalClose');
+
+  function openCvModal(lang){
+    const fileName = CV_FILES[lang] || CV_FILES.fr;
+    cvModalFrame.src = fileName;
+    cvModalDownload.setAttribute('href', fileName);
+    cvModalDownload.setAttribute('download', fileName);
+    cvModalFileName.textContent = fileName;
+    cvModalOverlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCvModal(){
+    cvModalOverlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+    // vide le src après la transition pour arrêter le chargement du PDF en fond
+    setTimeout(() => { cvModalFrame.src = ''; }, 250);
+  }
+
+  // clic sur n'importe quel bouton "CV" du site -> ouvre l'aperçu au centre de la page
+  document.querySelectorAll('.cv-link').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCvModal(currentLang);
+    });
+  });
+
+  cvModalClose.addEventListener('click', closeCvModal);
+  cvModalOverlay.addEventListener('click', (e) => {
+    if (e.target === cvModalOverlay) closeCvModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cvModalOverlay.classList.contains('is-open')) closeCvModal();
+  });
 
   function applyLang(lang){
     currentLang = lang;
