@@ -2096,7 +2096,7 @@
       <a href="#contact">Contact</a>
     </div>
     <div class="nav-controls">
-      <a class="cv-btn cv-link" href="BENAYACHE_SIDALI_CV_fr.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download aria-label="Télécharger le CV / Download resume">
+      <a class="cv-btn cv-link" href="BENAYACHE_SIDALI_CV_fr.pdf" data-href-fr="BENAYACHE_SIDALI_CV_fr.pdf" data-href-en="BENAYACHE_SIDALI_CV_en.pdf" download aria-label="Télécharger le CV / Download resume">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
         <span data-fr="CV" data-en="Resume">CV</span>
       </a>
@@ -2282,7 +2282,7 @@
 
     <div class="services-cta">
       <a href="#contact" class="btn btn-primary" data-fr="Discuter de votre besoin →" data-en="Discuss your project →">Discuter de votre besoin →</a>
-      <a class="btn btn-ghost cv-link" href="BENAYACHE_SIDALI_CV_FR.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download data-fr="Télécharger mon CV" data-en="Download my resume">Télécharger mon CV</a>
+      <a class="btn btn-ghost cv-link" href="BENAYACHE_SIDALI_CV_fr.pdf" data-href-fr="BENAYACHE_SIDALI_CV_fr.pdf" data-href-en="BENAYACHE_SIDALI_CV_en.pdf" download data-fr="Télécharger mon CV" data-en="Download my resume">Télécharger mon CV</a>
     </div>
   </section>
 
@@ -2386,7 +2386,7 @@
       <div class="contact-list">
         <div class="row"><span class="ico">📍</span> Algérie, Algérie</div>
         <a href="https://www.linkedin.com/in/benayache-sidali/" target="_blank" rel="noopener"><span class="ico">in</span> linkedin.com/in/benayache-sidali</a>
-        <a class="cv-btn cv-link" style="justify-content:center;" href="BENAYACHE_SIDALI_CV_FR.pdf" data-href-fr="BENAYACHE_SIDALI_CV_FR.pdf" data-href-en="BENAYACHE_SIDALI_CV_EN.pdf" download>
+        <a class="cv-btn cv-link" style="justify-content:center;" href="BENAYACHE_SIDALI_CV_fr.pdf" data-href-fr="BENAYACHE_SIDALI_CV_fr.pdf" data-href-en="BENAYACHE_SIDALI_CV_en.pdf" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3v13"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
           <span data-fr="Télécharger le CV (PDF)" data-en="Download resume (PDF)">Télécharger le CV (PDF)</span>
         </a>
@@ -2461,6 +2461,22 @@
     en: { flag: 'EN', code: 'fr', label: 'Passer en français / Switch to French' }
   };
 
+  // ---------- CV download link (dépend uniquement de la langue affichée) ----------
+  // Si la page est en FR -> BENAYACHE_SIDALI_CV_fr.pdf
+  // Si la page est en EN -> BENAYACHE_SIDALI_CV_en.pdf
+  function updateCvLinks(lang){
+    const CV_FILES = {
+      fr: 'BENAYACHE_SIDALI_CV_fr.pdf',
+      en: 'BENAYACHE_SIDALI_CV_en.pdf'
+    };
+    const fileName = CV_FILES[lang] || CV_FILES.fr;
+
+    document.querySelectorAll('.cv-link').forEach(el => {
+      el.setAttribute('href', fileName);
+      el.setAttribute('download', fileName);
+    });
+  }
+
   function applyLang(lang){
     currentLang = lang;
     document.documentElement.lang = lang;
@@ -2476,10 +2492,7 @@
     langToggleBtn.setAttribute('aria-label', LANG_META[lang].label);
 
     // point every "download CV" link to the CV file matching the current language
-    document.querySelectorAll('.cv-link').forEach(el => {
-      const href = lang === 'en' ? el.dataset.hrefEn : el.dataset.hrefFr;
-      if (href) el.setAttribute('href', href);
-    });
+    updateCvLinks(lang);
 
     try { localStorage.setItem('portfolio-lang', lang); } catch (e) {}
   }
@@ -2490,9 +2503,9 @@
 
   let savedLang = 'fr';
   try { savedLang = localStorage.getItem('portfolio-lang') || 'fr'; } catch (e) {}
-  if (savedLang === 'en') {
-    applyLang('en');
-  }
+  // toujours appliquer la langue au chargement : ceci met aussi à jour
+  // les liens de téléchargement du CV (fr -> CV_fr.pdf, en -> CV_en.pdf)
+  applyLang(savedLang);
 
   // ---------- scroll reveal ("arrival" animation for text/blocks) ----------
   (function initScrollReveal(){
